@@ -1,12 +1,18 @@
 package de.philipphauer.blog.testingrestservice.service.rest;
 
 import de.philipphauer.blog.testingrestservice.service.dataaccess.BlogRepository;
+import de.philipphauer.blog.testingrestservice.service.dataaccess.PostRepository;
 import de.philipphauer.blog.testingrestservice.service.dataaccess.entities.BlogEntity;
+import de.philipphauer.blog.testingrestservice.service.dataaccess.entities.PostEntity;
+import de.philipphauer.blog.testingrestservice.service.rest.dto.BlogDTO;
 import de.philipphauer.blog.testingrestservice.service.rest.dto.BlogsDTO;
 import de.philipphauer.blog.testingrestservice.service.rest.dto.ReferenceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,22 +23,62 @@ import java.util.stream.Collectors;
 public class BlogsResource {
 
     @Autowired
-    private BlogRepository repository;
+    private BlogRepository blogRepo;
+    @Autowired
+    private PostRepository postRepo;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public BlogsDTO getAll() {
-        Collection<BlogEntity> blogs = (Collection<BlogEntity>) repository.findAll();
-        BlogsDTO blogList = map(blogs);
+        Collection<BlogEntity> blogs = (Collection<BlogEntity>) blogRepo.findAll();
+        BlogsDTO blogList = mapToDTO(blogs);
         return blogList;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public BlogEntity getBlog(@PathVariable("id") Long id) {
-        BlogEntity blog = repository.findOne(id);
-        return blog;
+    public BlogDTO getBlog(@PathVariable("id") Long id) {
+        BlogEntity blog = blogRepo.findOne(id);
+        BlogDTO blogDTO = mapToDTO(blog);
+        return blogDTO;
     }
 
-    private BlogsDTO map(Collection<BlogEntity> blogs) {
+    @RequestMapping(value = "/{blogId}/posts", method = RequestMethod.GET)
+    public List<ReferenceDTO> getAllBlogPosts(@PathVariable("blogId") Long blogId) {
+        BlogEntity blog = blogRepo.findOne(blogId);
+        List<PostEntity> posts = blog.getPosts();
+        return mapToDTO(blog.getId(), posts);
+    }
+
+    @RequestMapping(value = "/{blogId}/posts/{postId}", method = RequestMethod.GET)
+    public PostEntity getBlogPost(@PathVariable("blogId") Long blogId, @PathVariable("postId") Long postId) {
+        PostEntity post = postRepo.findOne(postId);
+        return post;
+    }
+
+    private BlogDTO mapToDTO(BlogEntity blog) {
+        List<PostEntity> posts = blog.getPosts();
+        List<ReferenceDTO> postsDTO = mapToDTO(blog.getId(), posts);
+        BlogDTO blogDTO = new BlogDTO()
+                .setName(blog.getName())
+                .setDescription(blog.getDescription())
+                .setPosts(postsDTO);
+        return blogDTO;
+    }
+
+    private List<ReferenceDTO> mapToDTO(long blogId, List<PostEntity> posts) {
+        return posts.stream()
+                    .map(post -> mapToDTO(blogId, post))
+                    .collect(Collectors.toList());
+    }
+
+    private ReferenceDTO mapToDTO(long blogId, PostEntity post){
+        long id = post.getId();
+        String title = post.getTitle();
+        String url = "/blogs/" + blogId + "/posts/" + id;
+        ReferenceDTO ref = new ReferenceDTO().setId(id).setName(title).setUrl(url);
+        return ref;
+    }
+
+    private BlogsDTO mapToDTO(Collection<BlogEntity> blogs) {
         List<ReferenceDTO> blogRefs = blogs.stream()
                 .map(blogEntry -> {
                     String name = blogEntry.getName();
