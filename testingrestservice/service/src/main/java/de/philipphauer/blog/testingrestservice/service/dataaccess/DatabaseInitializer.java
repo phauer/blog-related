@@ -11,7 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,20 +34,20 @@ public class DatabaseInitializer implements CommandLineRunner {
         repo.save(blogs);
     }
 
-    private List<CommentEntity> createComments(int amount){
+    private List<CommentEntity> createComments(int amount) {
         return Stream.generate(() -> new CommentEntity()
-                .setAuthor("Peter")
-                .setDateTime(LocalDateTime.now())
+                .setAuthor(createRandomName())
+                .setCreatedDateTime(LocalDateTime.now())
                 .setContent(loremIpsum.getParagraphs())
-                )
+        )
                 .limit(amount)
                 .collect(Collectors.toList());
     }
 
-    private List<PostEntity> createPosts(int amount){
+    private List<PostEntity> createPosts(int amount) {
         return Stream.generate(() -> new PostEntity()
-                .setAuthor("Peter")
-                .setDateTime(LocalDateTime.now())
+                .setAuthor(createRandomName())
+                .setCreatedDateTime(LocalDateTime.now())
                 .setTeaser(loremIpsum.getParagraphs(1))
                 .setContent(loremIpsum.getParagraphs(7))
                 .setComments(createComments(5))
@@ -55,14 +57,24 @@ public class DatabaseInitializer implements CommandLineRunner {
                 .collect(Collectors.toList());
     }
 
-    private List<BlogEntity> createBlogs(int amount){
+    private List<BlogEntity> createBlogs(int amount) {
         return Stream.generate(() -> new BlogEntity()
                 .setName(loremIpsum.getWords(5))
                 .setDescription(loremIpsum.getParagraphs(1))
                 .setPosts(createPosts(9))
-                .setUrl("http://www."+loremIpsum.getWords(1,10)+".com")
+                .setUrl("http://www." + loremIpsum.getWords(1, 10) + ".com")
         )
                 .limit(amount)
                 .collect(Collectors.toList());
+    }
+
+    private List<String> firstNames = Arrays.asList("Max", "Paul", "Tim", "Nils", "Angela", "Maria", "Lea", "Sven", "Helena");
+    private List<String> lastNames = Arrays.asList("Müller", "Schmidt", "Merkel", "Henkel", "Lange", "Marx", "Heine", "Fischer", "Bauer");
+
+    private String createRandomName() {
+        Random random = new Random();
+        String firstName = firstNames.get(random.nextInt(firstNames.size()));
+        String lastName = lastNames.get(random.nextInt(lastNames.size()));
+        return firstName + " " + lastName;
     }
 }

@@ -11,7 +11,7 @@ public class PostEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    private LocalDateTime dateTime;
+    private LocalDateTime createdDateTime;
     private String title;
     @Size(max=300)
     private String teaser;
@@ -30,12 +30,12 @@ public class PostEntity {
         return this;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
     }
 
-    public PostEntity setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public PostEntity setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
         return this;
     }
 

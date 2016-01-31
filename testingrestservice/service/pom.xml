@@ -39,6 +39,12 @@
             <artifactId>loremipsum</artifactId>
             <version>1.0</version>
         </dependency>
+        <!-- mapping for java 8 time objects -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>

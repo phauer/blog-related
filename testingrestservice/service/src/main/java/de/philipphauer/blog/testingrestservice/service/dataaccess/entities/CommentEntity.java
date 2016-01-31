@@ -9,7 +9,7 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    private LocalDateTime dateTime;
+    private LocalDateTime createdDateTime;
     private String author;
     @Lob
     private String content;
@@ -23,12 +23,12 @@ public class CommentEntity {
         return this;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
     }
 
-    public CommentEntity setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public CommentEntity setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
         return this;
     }
 
