@@ -38,7 +38,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         return Stream.generate(() -> new CommentEntity()
                 .setAuthor(createRandomName())
                 .setCreatedDateTime(LocalDateTime.now())
-                .setContent(loremIpsum.getParagraphs())
+                .setContent(createRandomCommentText())
         )
                 .limit(amount)
                 .collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 .setTeaser(loremIpsum.getParagraphs(1))
                 .setContent(loremIpsum.getParagraphs(7))
                 .setComments(createComments(5))
-                .setTitle(loremIpsum.getWords(7))
+                .setTitle(createRandomPostTitle())
         )
                 .limit(amount)
                 .collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private List<BlogEntity> createBlogs(int amount) {
         return Stream.generate(() -> new BlogEntity()
-                .setName(loremIpsum.getWords(5))
+                .setName(createRandomBlogTitle())
                 .setDescription(loremIpsum.getParagraphs(1))
                 .setPosts(createPosts(9))
                 .setUrl("http://www." + loremIpsum.getWords(1, 10) + ".com")
@@ -68,13 +68,41 @@ public class DatabaseInitializer implements CommandLineRunner {
                 .collect(Collectors.toList());
     }
 
+    private Random random = new Random();
+
     private List<String> firstNames = Arrays.asList("Max", "Paul", "Tim", "Nils", "Angela", "Maria", "Lea", "Sven", "Helena");
     private List<String> lastNames = Arrays.asList("Müller", "Schmidt", "Merkel", "Henkel", "Lange", "Marx", "Heine", "Fischer", "Bauer");
 
     private String createRandomName() {
-        Random random = new Random();
-        String firstName = firstNames.get(random.nextInt(firstNames.size()));
-        String lastName = lastNames.get(random.nextInt(lastNames.size()));
+        String firstName = getRandomElement(firstNames);
+        String lastName = getRandomElement(lastNames);
         return firstName + " " + lastName;
     }
+
+    private List<String> comments = Arrays.asList("Cool!", "Awesome!", "Thanks!", "Well done!", "That's terrible", "I like nuts.");
+
+    private String createRandomCommentText() {
+        return getRandomElement(comments);
+    }
+
+    private List<String> parts1 = Arrays.asList("Creating", "Analysing", "Designing", "Implementing", "Investigating", "Ignoring");
+    private List<String> parts2 = Arrays.asList("Performance", "Footprint", "Code", "Quality", "Architecture", "Tests");
+    private List<String> parts3 = Arrays.asList("Microservices", "Docker", "of Spring Boot", "of a Vaadin application", "of RESTful Services", "of SOAP Services", "of angular.js", "of react.js");
+
+    private String createRandomPostTitle() {
+        String part1 = getRandomElement(parts1);
+        String part2 = getRandomElement(parts2);
+        String part3 = getRandomElement(parts3);
+        return part1 + " " + part2 + " "+part3;
+    }
+
+    private List<String> blogTitles = Arrays.asList("Java Ecosystem", "Web Development", "Web Architecture", "Software Architecture", "Software Archaeology", "Test Driven Development", "Model Driven Development", "Software Craftsmanship", "Build and Delivery");
+    private String createRandomBlogTitle() {
+        return getRandomElement(blogTitles);
+    }
+
+    private String getRandomElement(List<String> list){
+        return list.get(random.nextInt(list.size()));
+    }
 }
+
