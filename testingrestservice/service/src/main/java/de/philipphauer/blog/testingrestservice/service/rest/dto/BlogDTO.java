@@ -6,7 +6,17 @@ public class BlogDTO {
 
     private String name;
     private String description;
+    private String url;
     private List<ReferenceDTO> posts;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public BlogDTO setUrl(String url) {
+        this.url = url;
+        return this;
+    }
 
     public String getName() {
         return name;

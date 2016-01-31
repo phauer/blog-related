@@ -48,6 +48,7 @@ public class BlogsResource {
         return mapToDTO(blog.getId(), posts);
     }
 
+    //let's ignore the blogId for the sake of simplicity, because the postId is unique and and not context is necessary
     @RequestMapping(value = "/{blogId}/posts/{postId}", method = RequestMethod.GET)
     public PostEntity getBlogPost(@PathVariable("blogId") Long blogId, @PathVariable("postId") Long postId) {
         PostEntity post = postRepo.findOne(postId);
@@ -60,7 +61,8 @@ public class BlogsResource {
         BlogDTO blogDTO = new BlogDTO()
                 .setName(blog.getName())
                 .setDescription(blog.getDescription())
-                .setPosts(postsDTO);
+                .setPosts(postsDTO)
+                .setUrl(blog.getUrl());
         return blogDTO;
     }
 

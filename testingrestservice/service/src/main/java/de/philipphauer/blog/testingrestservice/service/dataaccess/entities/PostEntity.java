@@ -18,8 +18,18 @@ public class PostEntity {
     @Lob
     private String content;
     private String author;
+    private String slug;
     @OneToMany(cascade = CascadeType.ALL)
     private List<CommentEntity> comments;
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public PostEntity setSlug(String slug) {
+        this.slug = slug;
+        return this;
+    }
 
     public long getId() {
         return id;
