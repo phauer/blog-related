@@ -19,8 +19,18 @@ public class PostEntity {
     private String content;
     private String author;
     private String slug;
+    private int viewCount;
     @OneToMany(cascade = CascadeType.ALL)
     private List<CommentEntity> comments;
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public PostEntity setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+        return this;
+    }
 
     public String getSlug() {
         return slug;

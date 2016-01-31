@@ -54,7 +54,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                 .setContent(loremIpsum.getParagraphs(7))
                 .setComments(createComments(5))
                 .setTitle(title)
-                .setSlug(toSlug(title));
+                .setSlug(toSlug(title))
+                .setViewCount(random.nextInt(1000));
             }
             )
             .limit(amount)
