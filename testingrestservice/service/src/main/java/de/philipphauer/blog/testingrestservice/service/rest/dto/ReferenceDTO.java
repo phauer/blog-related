@@ -4,7 +4,7 @@ public class ReferenceDTO {
 
     private long id;
     private String name;
-    private String url;
+    private String href;
 
     public String getName() {
         return name;
@@ -24,12 +24,12 @@ public class ReferenceDTO {
         return this;
     }
 
-    public String getUrl() {
-        return url;
+    public String getHref() {
+        return href;
     }
 
-    public ReferenceDTO setUrl(String url) {
-        this.url = url;
+    public ReferenceDTO setHref(String href) {
+        this.href = href;
         return this;
     }
 }

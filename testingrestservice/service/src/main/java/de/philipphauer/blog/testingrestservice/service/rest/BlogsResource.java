@@ -62,7 +62,7 @@ public class BlogsResource {
                 .setName(blog.getName())
                 .setDescription(blog.getDescription())
                 .setPosts(postsDTO)
-                .setUrl(blog.getUrl());
+                .setHref(blog.getUrl());
         return blogDTO;
     }
 
@@ -75,8 +75,8 @@ public class BlogsResource {
     private ReferenceDTO mapToDTO(long blogId, PostEntity post){
         long id = post.getId();
         String title = post.getTitle();
-        String url = "/blogs/" + blogId + "/posts/" + id;
-        ReferenceDTO ref = new ReferenceDTO().setId(id).setName(title).setUrl(url);
+        String href = "/blogs/" + blogId + "/posts/" + id;
+        ReferenceDTO ref = new ReferenceDTO().setId(id).setName(title).setHref(href);
         return ref;
     }
 
@@ -85,8 +85,8 @@ public class BlogsResource {
                 .map(blogEntry -> {
                     String name = blogEntry.getName();
                     long id = blogEntry.getId();
-                    String url = "/blogs/" + id;
-                    ReferenceDTO ref = new ReferenceDTO().setId(id).setName(name).setUrl(url);
+                    String href = "/blogs/" + id;
+                    ReferenceDTO ref = new ReferenceDTO().setId(id).setName(name).setHref(href);
                     return ref;
                 })
                 .collect(Collectors.toList());
