@@ -47,6 +47,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     private List<PostEntity> createPosts(int amount) {
         return Stream.generate(() -> {
             String title = createRandomPostTitle();
+            String slug = toSlug(title);
             return new PostEntity()
                 .setAuthor(createRandomName())
                 .setCreatedDateTime(LocalDateTime.now())
@@ -54,8 +55,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                 .setContent(loremIpsum.getParagraphs(7))
                 .setComments(createComments(5))
                 .setTitle(title)
-                .setSlug(toSlug(title))
-                .setViewCount(random.nextInt(1000));
+                .setSlug(slug)
+                .setViewCount(random.nextInt(1000))
+                .setTags(createRandomTags())
+                .setFeaturedImage(slug+".png");
             }
             )
             .limit(amount)
@@ -112,6 +115,13 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private String getRandomElement(List<String> list) {
         return list.get(random.nextInt(list.size()));
+    }
+
+    private List<String> tags = Arrays.asList("Java", "Web", "Build", "Architecture", "Development", "Integration", "Modelling", "REST", "Scalability", "Cloud", "SOAP", "HTTP", "Swagger", "Best Practice", "Test", "TDD", "Vaadin", "Clean Code", "HATEOAS", "Spring Boot");
+
+    private String[] createRandomTags() {
+        return new String[]{getRandomElement(tags), getRandomElement(tags), getRandomElement(tags)};
+//        return Arrays.asList(getRandomElement(tags), getRandomElement(tags), getRandomElement(tags));
     }
 
     public String toSlug(String blogTitle){

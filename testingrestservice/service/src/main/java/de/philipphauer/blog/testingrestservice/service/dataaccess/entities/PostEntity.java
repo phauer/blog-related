@@ -13,15 +13,35 @@ public class PostEntity {
     private long id;
     private LocalDateTime createdDateTime;
     private String title;
+    private String author;
+    private String slug;
+    private int viewCount;
+    private String featuredImage;
+    private String[] tags;
     @Size(max=300)
     private String teaser;
     @Lob
     private String content;
-    private String author;
-    private String slug;
-    private int viewCount;
     @OneToMany(cascade = CascadeType.ALL)
     private List<CommentEntity> comments;
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public PostEntity setTags(String[] tags) {
+        this.tags = tags;
+        return this;
+    }
+
+    public String getFeaturedImage() {
+        return featuredImage;
+    }
+
+    public PostEntity setFeaturedImage(String featuredImage) {
+        this.featuredImage = featuredImage;
+        return this;
+    }
 
     public int getViewCount() {
         return viewCount;
