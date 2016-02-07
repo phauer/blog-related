@@ -63,7 +63,9 @@ public class Blogs {
     @Test
     public void createBlogAndCheckExistence(){
         //use POJOs/DTO to create dummy data and use serialization to get JSON. don't construct json manually.
-        //POJOS:
+        //construction your json payload with javax.json.JsonObject doesn't make any fun at all. verbose, cumbersome, not type-safe and error-prone. instead use POJOs.
+
+        //POJOs:
         //DON'T use ordinary setters -> verbose to write.
         //<example code>
         //DON'T use huge constructor with every possible field as an argument -> hard to read
