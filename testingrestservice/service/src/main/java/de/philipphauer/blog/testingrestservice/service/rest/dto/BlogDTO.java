@@ -6,15 +6,15 @@ public class BlogDTO {
 
     private String name;
     private String description;
-    private String href;
+    private String url;
     private List<ReferenceDTO> posts;
 
-    public String getHref() {
-        return href;
+    public String getUrl() {
+        return url;
     }
 
-    public BlogDTO setHref(String href) {
-        this.href = href;
+    public BlogDTO setUrl(String url) {
+        this.url = url;
         return this;
     }
 

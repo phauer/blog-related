@@ -8,11 +8,13 @@ import de.philipphauer.blog.testingrestservice.service.rest.dto.BlogDTO;
 import de.philipphauer.blog.testingrestservice.service.rest.dto.BlogsDTO;
 import de.philipphauer.blog.testingrestservice.service.rest.dto.ReferenceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +28,25 @@ public class BlogsResource {
     private BlogRepository blogRepo;
     @Autowired
     private PostRepository postRepo;
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity createBlog(UriComponentsBuilder uriBuilder, @RequestBody BlogDTO blogDto) {
+        BlogEntity blog = mapToEntry(blogDto);
+        blogRepo.save(blog);
+
+        UriComponents uriComponents =
+                uriBuilder.path("blogs/{id}").buildAndExpand(blog.getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uriComponents.toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
+
+    private BlogEntity mapToEntry(BlogDTO blogDto) {
+        return new BlogEntity()
+                .setUrl(blogDto.getUrl())
+                .setDescription(blogDto.getDescription())
+                .setName(blogDto.getName());
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public BlogsDTO getAll() {
@@ -62,7 +83,7 @@ public class BlogsResource {
                 .setName(blog.getName())
                 .setDescription(blog.getDescription())
                 .setPosts(postsDTO)
-                .setHref(blog.getUrl());
+                .setUrl(blog.getUrl());
         return blogDTO;
     }
 
@@ -90,6 +111,10 @@ public class BlogsResource {
                     return ref;
                 })
                 .collect(Collectors.toList());
-        return new BlogsDTO().setBlogs(blogRefs);
+        return new BlogsDTO()
+                .setBlogs(blogRefs)
+                .setOffset(0)
+                .setLimit(50)
+                .setCount(blogs.size());
     }
 }
