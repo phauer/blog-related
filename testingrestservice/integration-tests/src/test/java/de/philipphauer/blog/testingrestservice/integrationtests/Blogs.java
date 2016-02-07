@@ -7,7 +7,7 @@ import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.specification.RequestSpecification;
 import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogDTO;
-import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogsListDTO;
+import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogListDTO;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -151,17 +151,17 @@ public class Blogs {
 
     //I always create a POJO and map json to object. even when used just once for a request response.
     //to simplify the creation of the POJO class, a) consider public fields (OMG!) b) only add the fields you are interested in (+@JsonIgnoreProperties(ignoreUnknown = true))
-    //<code BlogsListDTO> vgl with json-response (with all fields)
+    //<code BlogListDTO> vgl with json-response (with all fields)
     //but: when you use class to create a dummy obj (e.g. to post it to the service) --> easier with fluent setter and private fields.
     @Test
     public void getAllBlogsWithMapping(){
-        BlogsListDTO retrievedBlogs = given()
+        BlogListDTO retrievedBlogs = given()
                 .spec(spec)
                 .when()
                 .get("blogs")
                 .then()
                 .statusCode(200)
-                .extract().as(BlogsListDTO.class);
+                .extract().as(BlogListDTO.class);
         assertThat(retrievedBlogs.count).isGreaterThan(7);
         assertThat(retrievedBlogs.blogs).isNotEmpty();
     }
@@ -179,7 +179,7 @@ public class Blogs {
         assertThat(retrievedBlogs.getInt("count")).isGreaterThan(7);
         assertThat(retrievedBlogs.getList("blogs")).isNotEmpty();
 
-        //B) using directly in rest-assured statement with hamcrest matcher. shorter, you have to use hamcrest. ;-)
+        //B) using directly in rest-assured statement with hamcrest matcher. built-in hamcrest support in rest-assured. shorter&concise, you have to use hamcrest. ;-)
         //import static org.hamcrest.Matchers.*;
         given()
                 .spec(spec)
@@ -189,9 +189,50 @@ public class Blogs {
                 .statusCode(200)
                 .content("count", greaterThan(7))
                 .content("blogs", is(not(empty())));
-        //however, jsonpath can be usefull -> see docs for more details
     }
 
-    //use assertj to make powerful assertions about the responded data (e.g. list containsId)
-    //auch hier jsonpath+hamcrest alternative zeigen
+    //more sophisticated assertions
+    @Test
+    public void createBlogAndCheckInList(){
+        BlogDTO newBlog = createDummyBlog();
+        String blogResourceLocation  = createResource("blogs", newBlog);
+        int createdBlogId = extractId(blogResourceLocation);
+
+        //use assertj to make powerful assertions about the responded data (e.g. list containsId)
+        //a) object mapping + assertj. typesafe and readable, but more verbose.
+        BlogListDTO retrievedBlogList = given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .extract().as(BlogListDTO.class);
+        assertThat(retrievedBlogList.blogs)
+                .extracting(blogEntry -> blogEntry.id)
+                .contains(createdBlogId);
+        //nice extracting() (like map() from java 8 stream api)
+
+        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, but more concise.
+        given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .content("blogs.id", contains(createdBlogId));
+        //however, jsonpath can be useful -> see docs for more details
+    }
+
+    @Test
+    public void jsonPath(){
+        JsonPath jsonPath = new JsonPath("{}");
+        //jsonpath useful when accessing one element in a deeply nested document. don't write a pojo class if you only interested in one element
+        jsonPath.getString("blogs[0].posts[0].author.name");
+    }
+
+    private int extractId(String resourceLocation) {
+        int slashIndex = resourceLocation.lastIndexOf("/");
+        String idString = resourceLocation.substring(slashIndex + 1);
+        return Integer.parseInt(idString);
+    }
 }
