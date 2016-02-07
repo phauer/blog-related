@@ -4,13 +4,16 @@ import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.filter.log.RequestLoggingFilter;
 import com.jayway.restassured.filter.log.ResponseLoggingFilter;
 import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.specification.RequestSpecification;
 import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogDTO;
+import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogsListDTO;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class Blogs {
 
@@ -88,6 +91,7 @@ public class Blogs {
         assertThat(retrievedBlog.getName()).isEqualTo(newBlog.getName());
         assertThat(retrievedBlog.getDescription()).isEqualTo(newBlog.getDescription());
         assertThat(retrievedBlog.getUrl()).isEqualTo(newBlog.getUrl());
+        //import static org.assertj.core.api.Assertions.assertThat;
     }
 
     //write clean test code: keep your test readable and maintainable! keep test methods short; use sub methods with nice descriptive names to make your test readable
@@ -146,13 +150,48 @@ public class Blogs {
     }
 
     //I always create a POJO and map json to object. even when used just once for a request response.
-    //to simplify the creation of the POJO class, a) consider public fields b) only add the fields you are interested in (+@JsonIgnoreProperties(ignoreUnknown = true))
+    //to simplify the creation of the POJO class, a) consider public fields (OMG!) b) only add the fields you are interested in (+@JsonIgnoreProperties(ignoreUnknown = true))
+    //<code BlogsListDTO> vgl with json-response (with all fields)
     //but: when you use class to create a dummy obj (e.g. to post it to the service) --> easier with fluent setter and private fields.
+    @Test
+    public void getAllBlogsWithMapping(){
+        BlogsListDTO retrievedBlogs = given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .extract().as(BlogsListDTO.class);
+        assertThat(retrievedBlogs.count).isGreaterThan(7);
+        assertThat(retrievedBlogs.blogs).isNotEmpty();
+    }
+    //alternative to separte POJO class/Mapping: to extract simple things from response -> jsonpath (strings -> but not type-safe and error-prone). only for simple things.
+    @Test
+    public void getAllBlogsWithJsonPath(){
+        //A) using assertj (i prefer because easy to debug and readable; and typesafe, finding matcher)
+        JsonPath retrievedBlogs = given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .extract().jsonPath();
+        assertThat(retrievedBlogs.getInt("count")).isGreaterThan(7);
+        assertThat(retrievedBlogs.getList("blogs")).isNotEmpty();
 
-
-
-    //response:- alternative to POJO/Mapping: to extract simple things from response -> jsonpath
-
+        //B) using directly in rest-assured statement with hamcrest matcher. shorter, you have to use hamcrest. ;-)
+        //import static org.hamcrest.Matchers.*;
+        given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .content("count", greaterThan(7))
+                .content("blogs", is(not(empty())));
+        //however, jsonpath can be usefull -> see docs for more details
+    }
 
     //use assertj to make powerful assertions about the responded data (e.g. list containsId)
+    //auch hier jsonpath+hamcrest alternative zeigen
 }
