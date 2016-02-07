@@ -20,7 +20,7 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class Blogs {
+public class BlogsTest {
 
     //=> create test code that is readable and easy write. this way keep tests maintainable.
 
