@@ -190,6 +190,7 @@ public class BlogsTest {
         assertThat(retrievedBlogs.getList("blogs")).isNotEmpty();
 
         //B) using directly in rest-assured statement with hamcrest matcher. built-in hamcrest support in rest-assured. shorter&concise, you have to use hamcrest. ;-)
+        //not type-safe, error-prone, harder to debug
         //import static org.hamcrest.Matchers.*;
         given()
                 .spec(spec)
@@ -209,7 +210,7 @@ public class BlogsTest {
         int createdBlogId = extractId(blogResourceLocation);
 
         //use assertj to make powerful assertions about the responded data (e.g. list containsId)
-        //a) object mapping + assertj. typesafe and readable, but more verbose.
+        //a) object mapping + assertj. typesafe and readable, but more verbose. easier to debug.
         BlogListDTO retrievedBlogList = given()
                 .spec(spec)
                 .when()
@@ -222,7 +223,7 @@ public class BlogsTest {
                 .contains(createdBlogId);
         //nice extracting() (like map() from java 8 stream api)
 
-        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, but more concise. but trouble with types.
+        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, harder to debug, but more concise. but trouble with types.
         given()
                 .spec(spec)
                 .when()
