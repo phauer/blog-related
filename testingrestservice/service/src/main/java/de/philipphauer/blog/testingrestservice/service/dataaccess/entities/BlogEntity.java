@@ -14,7 +14,7 @@ public class BlogEntity {
     @Size(max=300)
     private String description;
     private String url;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostEntity> posts;
 
     public long getId() {

@@ -22,7 +22,7 @@ public class PostEntity {
     private String teaser;
     @Lob
     private String content;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
 
     public String[] getTags() {
