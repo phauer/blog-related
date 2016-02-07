@@ -9,6 +9,15 @@ public class BlogDTO {
     private String description;
     private String url;
 
+    public BlogDTO() {}
+
+    //don't:
+    public BlogDTO(String name, String description, String url) {
+        this.name = name;
+        this.description = description;
+        this.url = url;
+    }
+
     public String getName() {
         return name;
     }

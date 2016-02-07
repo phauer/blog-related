@@ -1,5 +1,7 @@
 package de.philipphauer.blog.testingrestservice.integrationtests;
 
+import com.jayway.awaitility.Duration;
+import com.jayway.awaitility.core.ConditionFactory;
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.filter.log.RequestLoggingFilter;
 import com.jayway.restassured.filter.log.ResponseLoggingFilter;
@@ -11,6 +13,9 @@ import de.philipphauer.blog.testingrestservice.integrationtests.dto.BlogListDTO;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
+import static com.jayway.awaitility.Awaitility.await;
 import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -55,20 +60,23 @@ public class Blogs {
                 .statusCode(200);
     }
 
-
     @Test
     public void createBlogAndCheckExistence(){
         //use POJOs/DTO to create dummy data and use serialization to get JSON. don't construct json manually.
-        //use fluent setter in POJO
+        //POJOS:
+        //DON'T use ordinary setters -> verbose to write.
+        //<example code>
+        //DON'T use huge constructor with every possible field as an argument -> hard to read
+        BlogDTO blogDTO = new BlogDTO("Example", "Example", "www.blogdomain.de");//which parameter means what? hard to read.
+        //better: use fluent setter in POJO -> readable! see meaning of every argument.
         //use intelliJ's generator for setter (Alt+Insert > Getter and Setter)
         //<POJO code>
         BlogDTO newBlog = new BlogDTO()
-                .setName("Example Name")
-                .setDescription("Example Description")
+                .setName("Example")
+                .setDescription("Example")
                 .setUrl("www.blogdomain.de");
-        //jackson is built-in into rest-assured. only pass pojo to post. automatically serialized to json and put into the http body
-        //add jackson as project dependency
-
+        //object mapping is built-in into rest-assured. only pass pojo to post. automatically serialized to json and put into the http body
+        //jsut add jackson as a project dependency -> rest-assured will automatically use it.
         String locationHeader = given()
                 .spec(spec)
                 .body(newBlog)
@@ -212,15 +220,26 @@ public class Blogs {
                 .contains(createdBlogId);
         //nice extracting() (like map() from java 8 stream api)
 
-        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, but more concise.
+        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, but more concise. but trouble with types.
         given()
                 .spec(spec)
                 .when()
                 .get("blogs")
                 .then()
                 .statusCode(200)
-                .content("blogs.id", contains(createdBlogId));
+                .content("blogs.id", hasItem(createdBlogId));
         //however, jsonpath can be useful -> see docs for more details
+
+        //c) jsonpath + assertj
+        JsonPath retrievedBlogList2 = given()
+                .spec(spec)
+                .when()
+                .get("blogs")
+                .then()
+                .statusCode(200)
+                .extract().jsonPath();
+        assertThat(retrievedBlogList2.getList("blogs.id"))
+                .contains(createdBlogId);
     }
 
     @Test
@@ -234,5 +253,35 @@ public class Blogs {
         int slashIndex = resourceLocation.lastIndexOf("/");
         String idString = resourceLocation.substring(slashIndex + 1);
         return Integer.parseInt(idString);
+    }
+
+    //Wait and Poll: Dealing with asynchronous behavior (like events)
+    //use awaitility to wait and poll until a certain assertion becomes true or a timeout exceeds.
+    //import static com.jayway.awaitility.Awaitility.await;
+    @Test
+    public void waitAndPoll(){
+        sendAsyncEventThatChangesTheData();
+        await().atMost(Duration.TWO_SECONDS).until(() -> {
+            given()
+                    .when()
+                    .get("blogs")
+                    .then()
+                    .statusCode(200);
+        });
+    }
+
+    private void sendAsyncEventThatChangesTheData() {
+    }
+
+    //await(), atMost() etc returns immutable ConditionFactory. -> configure once behavior for polling and waiting and reuse it
+    public static final ConditionFactory WAIT = await()
+            .atMost(new Duration(15, TimeUnit.SECONDS))
+            .pollInterval(Duration.ONE_SECOND)
+            .pollDelay(Duration.ONE_SECOND);
+    @Test
+    public void waitAndPoll2(){
+        WAIT.until(() -> {
+            //...
+        });
     }
 }
