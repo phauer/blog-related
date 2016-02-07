@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Blogs {
 
+    //=> create test code that is readable and easy write. this way keep tests maintainable.
+
     private static RequestSpecification spec;
 
     //use rest-assured (nice readable fluent api)
@@ -83,22 +85,74 @@ public class Blogs {
                 .extract().as(BlogDTO.class);
         //using you POJOs (instead of JSONObject or Strings) makes equality check easy, typesafe and readeble.
         //use assertj (nice fluent, powerful and typesafe testing api; produces readable failure messages). I like it much more than hamcrest (problem to find matcher that can be used with type XY).
+        assertThat(retrievedBlog.getName()).isEqualTo(newBlog.getName());
+        assertThat(retrievedBlog.getDescription()).isEqualTo(newBlog.getDescription());
+        assertThat(retrievedBlog.getUrl()).isEqualTo(newBlog.getUrl());
+    }
+
+    //write clean test code: keep your test readable and maintainable! keep test methods short; use sub methods with nice descriptive names to make your test readable
+    //every time you start building block and override it with a comment -> extract the block to a method instead and use the comment as a method name. (Strg+Alt+M in IntelliJ)
+    @Test
+    public void createBlogAndCheckExistenceReadable(){
+        BlogDTO newBlog = createDummyBlog();
+        String blogResourceLocation = createResource("blogs", newBlog);
+        BlogDTO retrievedBlog = getResource(blogResourceLocation, BlogDTO.class);
+        assertEqualBlog(newBlog, retrievedBlog);
+    }
+
+    private BlogDTO createDummyBlog() {
+        return new BlogDTO()
+                .setName("Example Name")
+                .setDescription("Example Description")
+                .setUrl("www.blogdomain.de");
+    }
+
+    //nice reusable method
+    private String createResource(String path, Object bodyPayload) {
+        return given()
+                .spec(spec)
+                .body(bodyPayload)
+                .when()
+                .post(path)
+                .then()
+                .statusCode(201)
+                .extract().header("location");
+    }
+
+    //nice reusable method
+    private <T> T getResource(String locationHeader, Class<T> responseClass) {
+        return given()
+                    .spec(spec)
+                    .when()
+                    .get(locationHeader)
+                    .then()
+                    .statusCode(200)
+                    .extract().as(responseClass);
+    }
+
+    private void assertEqualBlog(BlogDTO newBlog, BlogDTO retrievedBlog) {
+        assertThat(retrievedBlog.getName()).isEqualTo(newBlog.getName());
+        assertThat(retrievedBlog.getDescription()).isEqualTo(newBlog.getDescription());
+        assertThat(retrievedBlog.getUrl()).isEqualTo(newBlog.getUrl());
+    }
+
+    //use abstract test class (spec, generic methods (createResource() and getResource())
+
+    //use asserj's as() to add domain information to your assertion failure messages
+    private void assertEqualBlog2(BlogDTO newBlog, BlogDTO retrievedBlog) {
         assertThat(retrievedBlog.getName()).as("Blog Name").isEqualTo(newBlog.getName());
         assertThat(retrievedBlog.getDescription()).as("Blog Description").isEqualTo(newBlog.getDescription());
         assertThat(retrievedBlog.getUrl()).as("Blog URL").isEqualTo(newBlog.getUrl());
     }
 
-    //clean code: keep your test method short; use sub methods with nice descriptive names to make your test readable
-    @Test
-    public void createBlogAndCheckExistenceReadable(){
-
-    }
+    //I always create a POJO and map json to object. even when used just once for a request response.
+    //to simplify the creation of the POJO class, a) consider public fields b) only add the fields you are interested in (+@JsonIgnoreProperties(ignoreUnknown = true))
+    //but: when you use class to create a dummy obj (e.g. to post it to the service) --> easier with fluent setter and private fields.
 
 
-    //response:
-    //- POJO even for reponse. If only for response -> consider public fields; use @IgnoreJsonProp
-    //- to extract simple things from response -> jsonpath
+
+    //response:- alternative to POJO/Mapping: to extract simple things from response -> jsonpath
 
 
-    //use assertj
+    //use assertj to make powerful assertions about the responded data (e.g. list containsId)
 }
