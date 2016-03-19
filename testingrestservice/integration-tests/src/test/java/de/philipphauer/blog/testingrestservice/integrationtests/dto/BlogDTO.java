@@ -9,6 +9,7 @@ public class BlogDTO {
     private String description;
     private String url;
 
+
     public BlogDTO() {}
 
     //don't:

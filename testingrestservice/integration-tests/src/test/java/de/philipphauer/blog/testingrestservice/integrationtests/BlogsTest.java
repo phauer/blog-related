@@ -24,7 +24,6 @@ public class BlogsTest {
 
     //=> create test code that is readable and easy write. this way keep tests maintainable.
 
-    private static RequestSpecification spec;
 
     //use rest-assured (nice readable fluent api)
     @Test
@@ -38,14 +37,18 @@ public class BlogsTest {
         //(import static com.jayway.restassured.RestAssured.given;)
     }
 
+    String host = System.getProperty("host");//better remove this lines for clearity
+    String port = System.getProperty("port");
+
     //use spec to reuse common request parameter
+    private static RequestSpecification spec;
+
     @BeforeClass
     public static void initSpec(){
         spec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setBaseUri("http://localhost:8080/")
-                //log request and response for better debugging. You can also only log if a requests fails.
-                .addFilter(new ResponseLoggingFilter())
+                .addFilter(new ResponseLoggingFilter())//log request and response for better debugging. You can also only log if a requests fails.
                 .addFilter(new RequestLoggingFilter())
                 .build();
     }
@@ -71,14 +74,14 @@ public class BlogsTest {
         //DON'T use huge constructor with every possible field as an argument -> hard to read
         BlogDTO blogDTO = new BlogDTO("Example", "Example", "www.blogdomain.de");//which parameter means what? hard to read.
         //better: use fluent setter in POJO -> readable! see meaning of every argument.
-        //use intelliJ's generator for setter (Alt+Insert > Getter and Setter)
+        //use intelliJ's generator for setter (Alt+Insert > Getter and Setter) can be performed using only the keyboard.
         //<POJO code>
         BlogDTO newBlog = new BlogDTO()
                 .setName("Example")
                 .setDescription("Example")
                 .setUrl("www.blogdomain.de");
         //object mapping is built-in into rest-assured. only pass pojo to post. automatically serialized to json and put into the http body
-        //jsut add jackson as a project dependency -> rest-assured will automatically use it.
+        //just add jackson as a project dependency -> rest-assured will automatically use it.
         String locationHeader = given()
                 .spec(spec)
                 .body(newBlog)
@@ -175,7 +178,10 @@ public class BlogsTest {
         assertThat(retrievedBlogs.count).isGreaterThan(7);
         assertThat(retrievedBlogs.blogs).isNotEmpty();
     }
-    //alternative to separte POJO class/Mapping: to extract simple things from response -> jsonpath (strings -> but not type-safe and error-prone). only for simple things.
+
+    //alternative to separate POJO class/Mapping:
+    // to extract simple things from response -> jsonpath
+    // (strings -> but not type-safe and error-prone). only for simple things.
     @Test
     public void getAllBlogsWithJsonPath(){
         //A) using assertj (i prefer because easy to debug and readable; and typesafe, finding matcher)
@@ -186,8 +192,8 @@ public class BlogsTest {
                 .then()
                 .statusCode(200)
                 .extract().jsonPath();
-        assertThat(retrievedBlogs.getInt("count")).isGreaterThan(7);
-        assertThat(retrievedBlogs.getList("blogs")).isNotEmpty();
+        assertThat(retrievedBlogs.getInt("count")).isGreaterThan(5);
+        assertThat(retrievedBlogs.getList("blogs.id")).isNotEmpty();
 
         //B) using directly in rest-assured statement with hamcrest matcher. built-in hamcrest support in rest-assured. shorter&concise, you have to use hamcrest. ;-)
         //not type-safe, error-prone, harder to debug
@@ -198,7 +204,7 @@ public class BlogsTest {
                 .get("blogs")
                 .then()
                 .statusCode(200)
-                .content("count", greaterThan(7))
+                .content("count", greaterThan(5))
                 .content("blogs", is(not(empty())));
     }
 
@@ -223,7 +229,9 @@ public class BlogsTest {
                 .contains(createdBlogId);
         //nice extracting() (like map() from java 8 stream api)
 
-        //b) jsonpath + hamcrest. jsonpath is also powerful (recognizes that "blogs" is a field. "blogs.id" returns list of ids. less robust, harder to debug, but more concise. but trouble with types.
+        //b) jsonpath + hamcrest. jsonpath is also powerful
+        // (recognizes that "blogs" is a field. "blogs.id" returns list of ids.
+        // less robust, harder to debug, but more concise. but trouble with types.
         given()
                 .spec(spec)
                 .when()
@@ -247,7 +255,7 @@ public class BlogsTest {
 
     @Test
     public void jsonPath(){
-        JsonPath jsonPath = new JsonPath("{}");
+        JsonPath jsonPath = new JsonPath("{\"blogs\":[\"posts\":[{\"author\":{\"name\":\"Paul\"}}]]}");
         //jsonpath useful when accessing one element in a deeply nested document. don't write a pojo class if you only interested in one element
         jsonPath.getString("blogs[0].posts[0].author.name");
     }
@@ -263,17 +271,17 @@ public class BlogsTest {
     //import static com.jayway.awaitility.Awaitility.await;
     @Test
     public void waitAndPoll(){
-        sendAsyncEventThatChangesTheData();
+        sendAsyncEventThatChangesABlog(123);
         await().atMost(Duration.TWO_SECONDS).until(() -> {
             given()
                     .when()
-                    .get("blogs")
+                    .get("blogs/123")
                     .then()
                     .statusCode(200);
         });
     }
 
-    private void sendAsyncEventThatChangesTheData() {
+    private void sendAsyncEventThatChangesABlog(int i) {
     }
 
     //await(), atMost() etc returns immutable ConditionFactory. -> configure once behavior for polling and waiting and reuse it
@@ -287,4 +295,11 @@ public class BlogsTest {
             //...
         });
     }
+
+
+    //    - anderen service aufrufen
+    //    -> http client _unit_ testen mit MockWebServer. anderen server mocken.
+
+    //    - Given-When-Then pattern
+    //    - keep this parts short. best: only one or a few parameterized method invocation. use submethods.
 }
