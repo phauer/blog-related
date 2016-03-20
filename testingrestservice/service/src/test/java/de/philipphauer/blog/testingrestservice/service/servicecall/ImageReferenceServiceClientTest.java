@@ -15,25 +15,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ImageReferenceServiceClientTest {
 
     private MockWebServer imageService;
-    private ImageServiceClient client;
+    private ImageServiceClient imageClient;
 
     @Before
     public void init() throws IOException {
         imageService = new MockWebServer();
-        imageService.start();
+        imageService.start(); //search for an available port
         HttpUrl baseUrl = imageService.url("/images/");
-        client = new ImageServiceClient(baseUrl.host(), baseUrl.port());
+        imageClient = new ImageServiceClient(baseUrl.host(), baseUrl.port());
     }
 
     @Test
-    public void requestImage_NotFoundImage() throws JsonProcessingException {
+    public void requestImage() throws JsonProcessingException {
         ImageReference expectedImageRef = new ImageReference().setId("123").setHref("http://images.company.org/123");
         String json = new ObjectMapper().writeValueAsString(expectedImageRef);
         imageService.enqueue(new MockResponse()
                 .addHeader("Content-Type", "application/json")
                 .setBody(json));
 
-        ImageReference retrievedImageRef = client.requestImage("123");
+        ImageReference retrievedImageRef = imageClient.requestImage("123");
 
         assertThat(retrievedImageRef.getId()).isEqualTo(expectedImageRef.getId());
         assertThat(retrievedImageRef.getHref()).isEqualTo(expectedImageRef.getHref());
