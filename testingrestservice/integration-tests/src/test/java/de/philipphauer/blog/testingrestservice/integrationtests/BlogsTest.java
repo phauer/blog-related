@@ -297,9 +297,12 @@ public class BlogsTest {
     }
 
 
-    //    - anderen service aufrufen
-    //    -> http client _unit_ testen mit MockWebServer. anderen server mocken.
-
-    //    - Given-When-Then pattern
+        //    - Given-When-Then pattern
     //    - keep this parts short. best: only one or a few parameterized method invocation. use submethods.
+    @Test
+    public void test(){
+        //Given: set up the input for the action under test (test data, mocks, stubs)
+        //When: execute the action you want to test.
+        //Then: check the output with assertions
+    }
 }
