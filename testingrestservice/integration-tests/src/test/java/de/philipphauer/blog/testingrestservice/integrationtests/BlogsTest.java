@@ -105,6 +105,9 @@ public class BlogsTest {
         assertThat(retrievedBlog.getDescription()).isEqualTo(newBlog.getDescription());
         assertThat(retrievedBlog.getUrl()).isEqualTo(newBlog.getUrl());
         //import static org.assertj.core.api.Assertions.assertThat;
+
+        //even better:
+        assertThat(retrievedBlog).isEqualToIgnoringGivenFields(newBlog, "id");
     }
 
     //write clean test code: keep your test readable and maintainable! keep test methods short; use sub methods with nice descriptive names to make your test readable
