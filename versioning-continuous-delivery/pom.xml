@@ -56,10 +56,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<prefix>git</prefix>
-					<dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  used for docker tag  -->
+					<dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  human-readable part of the version id -->
 					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-					<generateGitPropertiesFile>false</generateGitPropertiesFile><!-- use git.properties in src/main/resources. otherwise the variables are not available in the pom -->
+					<generateGitPropertiesFile>false</generateGitPropertiesFile><!-- somehow necessary. otherwise the variables are not available in the pom -->
 				</configuration>
 			</plugin>
 
@@ -129,8 +128,17 @@
 					<skip>true</skip> <!--  we push the image instead  -->
 				</configuration>
 			</plugin>
-
 		</plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
 	</build>
 	
 

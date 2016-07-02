@@ -7,9 +7,5 @@
             <source>target/${project.artifactId}-${version.id}.jar</source>
             <outputDirectory>/</outputDirectory>
         </file>
-        <file>
-            <source>target/classes/git.properties</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
     </files>
 </assembly>
