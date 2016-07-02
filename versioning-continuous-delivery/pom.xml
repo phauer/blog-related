@@ -5,7 +5,7 @@
 
 	<groupId>de.philipphauer.blog</groupId>
 	<artifactId>versioning-continuous-delivery</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${version.id}</version>
 	<packaging>jar</packaging>
 
 	<name>versioning-continuous-delivery</name>
@@ -21,18 +21,18 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+
+		<!-- IntelliJ grouses the following dynamic property. Workaround: Settings > Build, Execution, Development > Build Tools > Maven > Runner > Properties. Add git.commit.time and git.commit.id.abbrev with empty value. -->
+		<version.id>${git.commit.time}.${git.commit.id.abbrev}</version.id>
+		<docker.repository.name>phauer/${project.artifactId}</docker.repository.name>
+		<!-- Instead of docker hub, you can use your own registry: -->
+		<!--<docker.repository.name>registry.domain.de/phauer/${project.artifactId}</docker.repository.name>-->
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
@@ -42,6 +42,94 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<prefix>git</prefix>
+					<dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  used for docker tag  -->
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+					<generateGitPropertiesFile>false</generateGitPropertiesFile><!-- use git.properties in src/main/resources. otherwise the variables are not available in the pom -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.15.9</version>
+				<extensions>true</extensions>
+				<configuration>
+					<authConfig> <!-- see plugin documentation for better ways to store the credentials -->
+						<username>phauer</username>
+						<password>docker123</password>
+					</authConfig>
+					<images>
+						<image>
+							<name>${docker.repository.name}:${version.id}</name>
+							<alias>${project.artifactId}</alias>
+							<build>
+								<from>anapsix/alpine-java:jre8</from>
+								<tags>
+									<tag>latest</tag>
+								</tags>
+								<assembly>
+									<descriptor>assembly.xml</descriptor>
+								</assembly>
+								<ports>
+									<port>8080</port>
+								</ports>
+								<cmd>
+									<shell>
+										java -jar /maven/${project.artifactId}-${version.id}.jar
+									</shell>
+								</cmd>
+							</build>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>build-docker-image</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>push-docker-image-to-registry</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<configuration>
+					<skip>true</skip> <!-- we push the container image to the local registry instead -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip> <!--  we push the image instead  -->
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	

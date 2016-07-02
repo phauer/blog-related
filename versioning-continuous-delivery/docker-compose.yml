@@ -1,11 +1,8 @@
-# image not found? login using "docker login --username=abc --password=abc https://registry.sprd.net"
+# image not found? login using "docker login --username=abc --password=abc https://registry.domain.de"
 version: '2'
 services:
-  api-labels:
-    image: registry.sprd.net/sprd/api-labels:latest
+  versioning-continous-delivery:
+    image: phauer/versioning-continuous-delivery:latest
     network_mode: "host"
     ports:
-      - "2328:2328"
-      - "2428:2428"
-    volumes:
-      - ./api-labels-vm296.yaml:/config/api-labels.yaml
+      - "8080:8080"

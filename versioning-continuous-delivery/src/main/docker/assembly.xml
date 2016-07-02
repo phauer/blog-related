@@ -4,7 +4,7 @@
     <id>${project.artifactId}</id>
     <files>
         <file>
-            <source>target/${jar.name}.jar</source>
+            <source>target/${project.artifactId}-${version.id}.jar</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
