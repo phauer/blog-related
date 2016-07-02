@@ -8,14 +8,10 @@
 	<version>${version.number}</version>
 	<packaging>jar</packaging>
 
-	<name>versioning-continuous-delivery</name>
-	<description></description>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.3.5.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
