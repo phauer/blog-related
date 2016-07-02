@@ -5,7 +5,7 @@
 
 	<groupId>de.philipphauer.blog</groupId>
 	<artifactId>versioning-continuous-delivery</artifactId>
-	<version>${version.id}</version>
+	<version>${version.number}</version>
 	<packaging>jar</packaging>
 
 	<name>versioning-continuous-delivery</name>
@@ -22,11 +22,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 
-		<!-- IntelliJ grouses the following dynamic property. Workaround: Settings > Build, Execution, Development > Build Tools > Maven > Runner > Properties. Add git.commit.time and git.commit.id.abbrev with empty value. -->
-		<version.id>${git.commit.time}.${git.commit.id.abbrev}</version.id>
+		<!-- IntelliJ grouses the following dynamic properties. Workaround: Settings > Build, Execution, Development > Build Tools > Maven > Runner > Properties. Add git.commit.time and git.commit.id.abbrev with empty value. -->
+		<version.number>${git.commit.time}.${git.commit.id.abbrev}</version.number>
 		<docker.repository.name>phauer/${project.artifactId}</docker.repository.name>
 		<!-- Instead of docker hub, you can use your own registry: -->
-		<!--<docker.repository.name>registry.domain.de/phauer/${project.artifactId}</docker.repository.name>-->
+		<!--<docker.repository.name>registry.domain.de/group/${project.artifactId}</docker.repository.name>-->
 	</properties>
 
 	<dependencies>
@@ -74,7 +74,7 @@
 					</authConfig>
 					<images>
 						<image>
-							<name>${docker.repository.name}:${version.id}</name>
+							<name>${docker.repository.name}:${version.number}</name>
 							<alias>${project.artifactId}</alias>
 							<build>
 								<from>anapsix/alpine-java:jre8</from>
@@ -89,7 +89,7 @@
 								</ports>
 								<cmd>
 									<shell>
-										java -jar /maven/${project.artifactId}-${version.id}.jar
+										java -jar /maven/${project.artifactId}-${version.number}.jar
 									</shell>
 								</cmd>
 							</build>
