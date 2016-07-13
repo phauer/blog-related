@@ -31,7 +31,7 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -64,7 +64,7 @@
 				<version>0.15.9</version>
 				<extensions>true</extensions>
 				<configuration>
-					<authConfig> <!-- see plugin documentation for better ways to store the credentials -->
+					<authConfig> <!-- or use "docker login" up front to store the credentials on the local machine. -->
 						<username>phauer</username>
 						<password>docker123</password>
 					</authConfig>
