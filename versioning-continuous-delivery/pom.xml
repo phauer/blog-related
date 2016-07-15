@@ -17,12 +17,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-
 		<!-- IntelliJ grouses the following dynamic properties. Workaround: Settings > Build, Execution, Development > Build Tools > Maven > Runner > Properties. Add git.commit.time and git.commit.id.abbrev with empty value. -->
 		<version.number>${git.commit.time}.${git.commit.id.abbrev}</version.number>
-		<docker.repository.name>phauer/${project.artifactId}</docker.repository.name>
-		<!-- Instead of docker hub, you can use your own registry: -->
-		<!--<docker.repository.name>registry.domain.de/group/${project.artifactId}</docker.repository.name>-->
 	</properties>
 
 	<dependencies>
@@ -57,73 +53,12 @@
 					<generateGitPropertiesFile>false</generateGitPropertiesFile><!-- somehow necessary. otherwise the variables are not available in the pom -->
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.15.9</version>
-				<extensions>true</extensions>
-				<configuration>
-					<authConfig> <!-- or use "docker login" up front to store the credentials on the local machine. -->
-						<username>phauer</username>
-						<password>docker123</password>
-					</authConfig>
-					<images>
-						<image>
-							<name>${docker.repository.name}:${version.number}</name>
-							<alias>${project.artifactId}</alias>
-							<build>
-								<from>anapsix/alpine-java:jre8</from>
-								<tags><!-- define additional tags for the image -->
-									<tag>latest</tag>
-								</tags>
-								<assembly>
-									<descriptor>assembly.xml</descriptor>
-								</assembly>
-								<ports>
-									<port>8080</port>
-								</ports>
-								<cmd>
-									<shell>
-										java -jar /maven/${project.artifactId}-${version.number}.jar
-									</shell>
-								</cmd>
-							</build>
-						</image>
-					</images>
-				</configuration>
-				<executions>
-					<execution>
-						<id>build-docker-image</id>
-						<phase>package</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>push-docker-image-to-registry</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>push</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<configuration>
-					<skip>true</skip> <!-- we push the container image to the local registry instead -->
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip> <!--  we push the image instead  -->
-				</configuration>
-			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>
