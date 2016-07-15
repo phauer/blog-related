@@ -51,6 +51,7 @@
 					<dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  human-readable part of the version id -->
 					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
 					<generateGitPropertiesFile>false</generateGitPropertiesFile><!-- somehow necessary. otherwise the variables are not available in the pom -->
+					<injectAllReactorProjects>true</injectAllReactorProjects>
 				</configuration>
 			</plugin>
 		</plugins>
