@@ -39,7 +39,7 @@ compare-payloads(){
 #TODO xml nodes are not sorted!
 #TODO compare files... using cat?
 #TODO if not equal -> show meld's diff to the developer and let him decide
-#TODO example for an equal payload
+#TODO example for an equal payload -> ok simply compare same path!
 
 compare-payloads "json"
 compare-payloads "xml"
