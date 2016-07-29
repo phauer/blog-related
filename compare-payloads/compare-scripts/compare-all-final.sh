@@ -34,12 +34,9 @@ compare-payloads(){
         meld "$payload1" "$payload2"
     fi
 }
-#TODO service: don't calculate the payload and timestamp on call! create dummys on startup. otherwise the diff is always different
 #TODO pipe output of http to variable, so this can be outside of the if-body. this also prevents redundant echos for the requests. "calling ...".
 #TODO xml nodes are not sorted!
 #TODO compare files... using cat?
-#TODO if not equal -> show meld's diff to the developer and let him decide
-#TODO example for an equal payload -> ok simply compare same path!
 
 compare-payloads "json"
 compare-payloads "xml"
