@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ]; then
+if [ -z "$2" ]; then
     fileName=$(basename "$0")
     printf "Paths are not provided! Pattern: \n./$fileName \"http://localhost:8080/blogposts\" \"http://localhost:8080/blogposts2\"\n"
     exit
