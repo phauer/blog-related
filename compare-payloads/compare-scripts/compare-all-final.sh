@@ -30,7 +30,8 @@ compare-payloads(){
         echo "$format payloads are equal."
     else
         echo "!!!$format payloads are NOT EQUAL!!!"
-        # if the payloads are not equals, show create a diff and show it to the developer. Let's him decide.
+        # if the payloads are not equal, create a diff and show it to the developer. Let him decide.
+        echo "Showing a diff via meld..."
         meld "$payload1" "$payload2"
     fi
 }
