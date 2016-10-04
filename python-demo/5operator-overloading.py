@@ -18,7 +18,7 @@ class User:
     def __eq__(self, other):
         return self.name is other.name and self.age is other.age
 
-print(User("Hauke", 28) is User("Peter", 30))  # False
+print(User("Hauke", 28) == User("Peter", 30))  # False
 
 # e.g. for "list[element]" we need to implement "__getitem__"
 class UserAgeFinder:
