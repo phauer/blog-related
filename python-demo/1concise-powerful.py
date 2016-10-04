@@ -1,6 +1,6 @@
 # You don’t need {} for method bodies (use indent instead), no semicolon, no () in if conditions.
 def divide(a, b):
-    if b is 0:
+    if b == 0:
         raise ValueError("Dude, you can't divide {} by {}".format(a, b))
     return a / b
 
