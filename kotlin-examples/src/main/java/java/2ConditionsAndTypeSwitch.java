@@ -18,10 +18,10 @@ class Conditions {
 
     //verbose. annoying type cast.
     public String getExceptionMessage(Exception exception){
-        if (exception instanceof SQLException){
-            return exception.getMessage() + ". state: " + ((SQLException) exception).getSQLState();
-        } else if (exception instanceof MyLabeledException){
+        if (exception instanceof MyLabeledException){
             return ((MyLabeledException) exception).getLabel();
+        } else if (exception instanceof SQLException){
+            return exception.getMessage() + ". state: " + ((SQLException) exception).getSQLState();
         } else {
             return exception.getMessage();
         }

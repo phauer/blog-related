@@ -21,8 +21,8 @@ fun getDefaultLocale2(deliveryArea: String): Locale = when (deliveryArea){
 
 fun getExceptionMessage(exception: Exception) = when (exception){
     //concise type switches
-    is SQLException -> exception.message + ". state: " + exception.sqlState //smart cast to SQLException -> we can call sqlState directly.
-    is MyLabeledException -> exception.label
+    is MyLabeledException -> exception.label //smart cast to SQLException -> we can call sqlState directly.
+    is SQLException -> "${exception.message}. state: ${exception.sqlState}" //string interpolation
     else -> exception.message
 }
 
