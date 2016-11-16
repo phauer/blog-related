@@ -209,7 +209,7 @@ class Mapper {
         );
     }
 
-    //null checks inflates code. very verbose. hard to read.
+    //null checks bloat code. very verbose. hard to read.
     private String getNameOrDefault(AuthorEntity author) {
         if (author != null){
             String name = author.getName();

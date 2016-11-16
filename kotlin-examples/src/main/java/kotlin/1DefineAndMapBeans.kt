@@ -8,7 +8,7 @@ class PostEntity(val id: Long, val date: Instant?, val author: AuthorEntity?, va
 class AuthorEntity(val name: String, val email: String?)
 class CommentEntity(val text: String, val author: AuthorEntity, date: Instant)
 //"val" makes the beans immutable ("var" fields can be modified)
-//type "String" can never be null. compiler enforces this! "String?" is nullable. null-safe types make code much safer and avoid inflating null checks.
+//type "String" can never be null. compiler enforces this! "String?" is nullable. null-safe types make code much safer and avoid bloating null checks.
 
 class BlogDTO(val id: Long, val name:String, val posts: List<PostDTO>?)
 class PostDTO(val id: Long, val author: String, val date: String?, val text: String, commentsHref: String)
