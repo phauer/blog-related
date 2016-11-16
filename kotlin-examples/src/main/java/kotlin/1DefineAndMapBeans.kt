@@ -24,10 +24,10 @@ fun mapToBlogDTO(entity: BlogEntity) = BlogDTO(
         posts = entity.posts?.map { mapToPostDTO(it) } //kotlin compiler forces me to consider that posts can be null. we can't call map directly on posts, because it can be null. null-safe call "?." calls operation only of posts if not null. otherwise it returns null.
 )
 fun mapToPostDTO(entity: PostEntity) = PostDTO(
-        //named arguments makes code very readable.
+        //readable due to named arguments.
         id = entity.id,
         date = entity.date?.epochSecond.toString(), //"?." (null safe call). if date is null, null is assigned. otherwise the epochSecond is retrieved and assigned.
-        author = entity.author?.name ?: "Anonymous", //elvis operator ("?:") makes Java' getNameOrDefault() a one-liner! if left side of "?:" is null, the right side is returned else the left side is returned.
+        author = entity.author?.name ?: "Anonymous", //elvis operator ("?:") makes Java's getNameOrDefault() a one-liner! if left side of "?:" is null, the right side is returned. otherwise the left side is returned.
         text = entity.text,
         commentsHref = "posts/${entity.id}/comments" //string interpolation!
 )
@@ -35,8 +35,8 @@ fun mapToPostDTO(entity: PostEntity) = PostDTO(
 
 //warp up: kotlin code is...
 // a) extremely concise (data classes, single expression function, field accessor, compact list operations, null-safe calls, elvis operator),
-//lines of code: 201 lines (java) vs 18 lines (kotlin). (and java doesn't include hashCode(), toString(), hashCode())
-//factor 11+ when it comes to code for structs and mapping!
+//lines of code: 201 lines (java) vs 18 lines (kotlin)! (and java doesn't include hashCode(), toString(), hashCode())
+//=> factor 11+ when it comes to code for structs and mapping!! no boilerplate in Kotlin.
 // b) more readable (named arguments) and
 // c) less error-prone (compiler enforced null safety, immutability, no manually written toString(), hashCode(), equals()).
 // extremely reduced boilerplate.
