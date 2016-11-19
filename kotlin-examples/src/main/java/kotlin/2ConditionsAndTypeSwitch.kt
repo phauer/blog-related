@@ -13,7 +13,7 @@ fun getDefaultLocale(deliveryArea: String): Locale {
     }
 }
 // or even shorter as a single expression function:
-fun getDefaultLocale2(deliveryArea: String): Locale = when (deliveryArea){
+fun getDefaultLocale2(deliveryArea: String) = when (deliveryArea){
     "germany", "austria", "switzerland" -> Locale.GERMAN
     "usa", "england", "australia" -> Locale.ENGLISH
     else -> throw IllegalArgumentException("Unsupported deliveryArea $deliveryArea")
@@ -21,7 +21,7 @@ fun getDefaultLocale2(deliveryArea: String): Locale = when (deliveryArea){
 
 fun getExceptionMessage(exception: Exception) = when (exception){
     //concise type switches
-    is MyLabeledException -> exception.label //smart cast to MyLabeledException -> we can call sqlState directly.
+    is MyLabeledException -> exception.label //smart cast to MyLabeledException -> we can call label directly.
     is SQLException -> "${exception.message}. state: ${exception.sqlState}" //string interpolation
     else -> exception.message
 }
