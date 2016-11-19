@@ -11,7 +11,7 @@ class Conditions {
         if (deliveryArea.equals("usa") || deliveryArea.equals("great britain") || deliveryArea.equals("australia")) {
             return Locale.ENGLISH;
         }
-        throw new IllegalStateException("Unsupported deliveryArea " + deliveryArea);
+        throw new IllegalArgumentException("Unsupported deliveryArea " + deliveryArea);
     }
     //or via switch and fall-through
 

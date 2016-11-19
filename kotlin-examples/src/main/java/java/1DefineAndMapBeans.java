@@ -5,18 +5,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 //BlogEntity (received from persistence layer) map to BlogDTO (returned by our REST Service)
-//struct definition and mapping code is extremely verbose in java!
-//besides, null handling is cumbersome. especially when it comes to nested objects that can be null.
-//all values can be null. easy to run into NullPointerExceptions. This leads to error code. And even if you add null-checks, it's easy to forget a check (because the compiler doesn't help you) and the code gets very verbose.
-//argument lists are hard to read and error prone
-
+//Struct definition and mapping code are extremely verbose in java!
+//Besides, null handling is cumbersome. Especially when it comes to nested objects that can be null.
+//All values can be null. It's easy to run into NullPointerExceptions. This leads to error-prone code. And even if you add null-checks, it's easy to forget a check (because the compiler doesn't help you) and the code becomes very verbose.
+//Argument lists are hard to read and error prone
 class BlogEntity {
     private long id;
     private String name;
     private List<PostEntity> posts;
 
-    //praise my IDE for generating the constructor and getter, setter boilerplate. otherwise I would drive nuts.
-    //moreover, equals(), hashCode(), toString() are still missing!
+    //Praise my IDE for generating the constructor and getter boilerplate. Otherwise I would drive nuts.
+    //Moreover, equals(), hashCode(), toString() are still missing!
     //AND you have to maintain these methods when field are added or removed.
     public BlogEntity(long id, String name, List<PostEntity> posts) {
         this.id = id;
