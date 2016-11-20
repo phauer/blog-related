@@ -23,13 +23,14 @@ fun mapToBlogDTO(entity: BlogEntity) = BlogDTO(
         name = entity.name,
         posts = entity.posts?.map { mapToPostDTO(it) }
         //The Kotlin compiler forces me to consider that posts can be null.
-        //We can't call map directly on posts, because it can be null. The null-safe call "?." calls the operation only if posts are not null. Otherwise the whole expression is null.
+        //We can't call map() directly on posts, because it can be null.
+        //The null-safe call ("?.") invokes the operation only if posts are not null. Otherwise the whole expression is null.
 )
 fun mapToPostDTO(entity: PostEntity) = PostDTO(
         //easy to read due to named arguments.
         id = entity.id,
         date = entity.date?.epochSecond.toString(), //"?." (null safe call). if date is null, null is assigned. Otherwise the epochSecond is retrieved and assigned.
-        author = entity.author?.name ?: "Anonymous", //elvis operator ("?:") makes Java's getNameOrDefault() a one-liner! If left side of "?:" is null, the right side is returned. Otherwise the left side is returned.
+        author = entity.author?.name ?: "Anonymous", //The elvis operator ("?:") makes Java's getNameOrDefault() a one-liner! If left side of "?:" is null, the right side is returned. Otherwise the left side is returned.
         text = entity.text,
         commentsHref = "posts/${entity.id}/comments" //String interpolation!
 )

@@ -9,13 +9,13 @@ fun getDefaultLocale(deliveryArea: String): Locale {
     when (deliveryArea){
         "germany", "austria", "switzerland" -> return Locale.GERMAN
         "usa", "great britain", "australia" -> return Locale.ENGLISH
-        else -> throw IllegalArgumentException("Unsupported deliveryArea $deliveryArea")
+        else -> throw IllegalArgumentException("Unsupported deliveryArea $deliveryArea") //string interpolation
     }
 }
 // or even shorter as a single expression function:
 fun getDefaultLocale2(deliveryArea: String) = when (deliveryArea){
     "germany", "austria", "switzerland" -> Locale.GERMAN
-    "usa", "england", "australia" -> Locale.ENGLISH
+    "usa", "great britain", "australia" -> Locale.ENGLISH
     else -> throw IllegalArgumentException("Unsupported deliveryArea $deliveryArea")
 }
 
