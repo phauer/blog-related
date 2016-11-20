@@ -15,7 +15,7 @@ class BlogDTO(val id: Long, val name: String, val posts: List<PostDTO>?)
 class PostDTO(val id: Long, val author: String, val date: String?, val text: String, commentsHref: String)
 
 //Usage of "single expression function": No body {} is necessary, if there is only a single expression.
-//Less boilerplate for list operations: we can call map() directly on a list and it returns a list.
+//Less boilerplate with the collection API : we can call map() directly on a list and it returns a list.
 //Implicit variable "it" (= parameter) makes lambda syntax even shorter. but you can also write "para -> mapToBlogDTO(para)".
 fun mapToBlogDTOs(entities: List<BlogEntity>) = entities.map { mapToBlogDTO(it) }
 fun mapToBlogDTO(entity: BlogEntity) = BlogDTO(
