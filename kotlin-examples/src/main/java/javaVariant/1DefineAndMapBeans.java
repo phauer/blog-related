@@ -1,4 +1,4 @@
-package java;
+package javaVariant;
 
 import java.time.Instant;
 import java.util.List;

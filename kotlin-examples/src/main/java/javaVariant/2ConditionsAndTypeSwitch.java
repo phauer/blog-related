@@ -1,4 +1,4 @@
-package java;
+package javaVariant;
 
 import java.sql.SQLException;
 import java.util.Locale;

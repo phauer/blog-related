@@ -1,9 +1,9 @@
-package kotlin
+package kotlinVariant
 
 import java.time.Instant
 
 //Data classes: Each entity definition in a single line! We get immutability, constructor, hashCode(), equals(), toString() for free.
-class BlogEntity(val id: Long, val name:String, val posts: List<PostEntity>?)
+class BlogEntity(val id: Long, val name: String, val posts: List<PostEntity>?)
 class PostEntity(val id: Long, val date: Instant?, val author: AuthorEntity?, val text: String, comments: List<CommentEntity>?)
 class AuthorEntity(val name: String, val email: String?)
 class CommentEntity(val text: String, val author: AuthorEntity, date: Instant)
@@ -11,7 +11,7 @@ class CommentEntity(val text: String, val author: AuthorEntity, date: Instant)
 //The type "String" can never be null. The compiler enforces this!
 //Contrarily, the type "String?" is nullable. Null-safe types make the code much safer and avoid bloating null checks.
 
-class BlogDTO(val id: Long, val name:String, val posts: List<PostDTO>?)
+class BlogDTO(val id: Long, val name: String, val posts: List<PostDTO>?)
 class PostDTO(val id: Long, val author: String, val date: String?, val text: String, commentsHref: String)
 
 //Usage of "single expression function": No body {} is necessary, if there is only a single expression.

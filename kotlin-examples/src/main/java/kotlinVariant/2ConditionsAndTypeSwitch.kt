@@ -1,4 +1,4 @@
-package kotlin
+package kotlinVariant
 
 import java.sql.SQLException
 import java.util.Locale
