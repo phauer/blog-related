@@ -1,0 +1,9 @@
+@import "../valo/valo.scss";
+
+@mixin mytheme {
+  @include valo;
+
+  .monospace {
+    font-family: monospace;
+  }
+}
