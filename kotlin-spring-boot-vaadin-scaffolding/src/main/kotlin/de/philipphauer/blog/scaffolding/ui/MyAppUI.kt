@@ -2,6 +2,7 @@ package de.philipphauer.blog.scaffolding.ui
 
 import com.vaadin.annotations.Theme
 import com.vaadin.server.FontAwesome
+import com.vaadin.server.Page
 import com.vaadin.server.VaadinRequest
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.spring.annotation.SpringUI
@@ -19,6 +20,7 @@ class MyAppUI(val mainContent: MainViewDisplay, navigator: SpringNavigator) : UI
     val navigationPresenter = NavigationPresenter(navigator)
 
     override fun init(request: VaadinRequest) {
+        Page.getCurrent().setTitle("Kotlin, Spring Boot, Vaadin")
         content = MVerticalLayout()
                 .add(createHeader())
                 .add(navigationPresenter.menu)
