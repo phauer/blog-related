@@ -5,7 +5,6 @@ import de.philipphauer.blog.scaffolding.db.SnippetEntity
 import de.philipphauer.blog.scaffolding.db.SnippetRepository
 import de.philipphauer.blog.scaffolding.db.SnippetState
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
@@ -15,7 +14,6 @@ import java.time.Instant
 class DummyDataCreator(val repo: SnippetRepository, val logger: Logger) : ApplicationRunner {
 
     override fun run(args: ApplicationArguments) {
-        logger.info("!!!!!!!")
         val count = repo.count()
         if (count == 0L){
             logger.info("Inserting dummy data...")

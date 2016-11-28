@@ -18,7 +18,6 @@ import de.philipphauer.blog.scaffolding.db.SnippetRepository
 import de.philipphauer.blog.scaffolding.ui.Labels
 import de.philipphauer.blog.scaffolding.ui.PropertyIds
 import de.philipphauer.blog.scaffolding.ui.SnippetCreationItem
-import org.vaadin.viritin.BeanBinder
 import javax.annotation.PostConstruct
 
 
@@ -30,6 +29,8 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
         const val LABEL = "Create Snippet"
     }
 
+    lateinit var fieldGroup: BeanFieldGroup<SnippetCreationItem>
+
     override fun enter(event: ViewChangeListener.ViewChangeEvent) {
     }
 
@@ -38,15 +39,19 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
         val form = CreateSnippetForm().apply {
             createButton.addClickListener { createSnippet() }
         }
-        val emptyItem = BeanItem<SnippetCreationItem>(SnippetCreationItem())
-        val fieldGroup = BeanBinder.bind(emptyItem, form)
+        val emptyItem = SnippetCreationItem()
+        fieldGroup = BeanFieldGroup.bindFieldsUnbuffered(emptyItem, form)
         setSizeFull()
         addComponent(form)
         setExpandRatio(form, 1f)
     }
 
     private fun createSnippet() {
-        Notification.show("Snippet creation not implemented.")
+        if (fieldGroup.isValid){
+            Notification.show("Snippet: ${fieldGroup.itemDataSource.bean}")
+        } else {
+            Notification.show("Invalid!", Notification.Type.ERROR_MESSAGE)
+        }
     }
 }
 
