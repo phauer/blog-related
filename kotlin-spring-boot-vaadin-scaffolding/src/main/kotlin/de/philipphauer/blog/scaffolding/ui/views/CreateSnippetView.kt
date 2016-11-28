@@ -1,8 +1,7 @@
 package de.philipphauer.blog.scaffolding.ui.views
 
-import com.vaadin.data.fieldgroup.FieldGroup
+import com.vaadin.data.fieldgroup.BeanFieldGroup
 import com.vaadin.data.fieldgroup.PropertyId
-import com.vaadin.data.util.BeanItem
 import com.vaadin.navigator.View
 import com.vaadin.navigator.ViewChangeListener
 import com.vaadin.server.FontAwesome
