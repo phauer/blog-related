@@ -18,6 +18,7 @@ import de.philipphauer.blog.scaffolding.db.SnippetRepository
 import de.philipphauer.blog.scaffolding.ui.Labels
 import de.philipphauer.blog.scaffolding.ui.PropertyIds
 import de.philipphauer.blog.scaffolding.ui.SnippetCreationItem
+import org.vaadin.viritin.BeanBinder
 import javax.annotation.PostConstruct
 
 
@@ -38,9 +39,7 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
             createButton.addClickListener { createSnippet() }
         }
         val emptyItem = BeanItem<SnippetCreationItem>(SnippetCreationItem())
-        val fieldGroup = FieldGroup(emptyItem).apply {
-            buildAndBindMemberFields(form)
-        }
+        val fieldGroup = BeanBinder.bind(emptyItem, form)
         setSizeFull()
         addComponent(form)
         setExpandRatio(form, 1f)
