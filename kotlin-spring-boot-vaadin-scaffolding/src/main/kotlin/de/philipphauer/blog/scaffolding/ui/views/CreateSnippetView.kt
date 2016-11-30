@@ -16,7 +16,7 @@ import com.vaadin.ui.VerticalLayout
 import de.philipphauer.blog.scaffolding.db.SnippetRepository
 import de.philipphauer.blog.scaffolding.ui.Labels
 import de.philipphauer.blog.scaffolding.ui.PropertyIds
-import de.philipphauer.blog.scaffolding.ui.SnippetCreationItem
+import de.philipphauer.blog.scaffolding.ui.SnippetCreationBean
 import javax.annotation.PostConstruct
 
 
@@ -28,7 +28,7 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
         const val LABEL = "Create Snippet"
     }
 
-    lateinit var fieldGroup: BeanFieldGroup<SnippetCreationItem>
+    lateinit var fieldGroup: BeanFieldGroup<SnippetCreationBean>
 
     override fun enter(event: ViewChangeListener.ViewChangeEvent) {
     }
@@ -38,8 +38,8 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
         val form = CreateSnippetForm().apply {
             createButton.addClickListener { createSnippet() }
         }
-        val emptyItem = SnippetCreationItem()
-        fieldGroup = BeanFieldGroup.bindFieldsUnbuffered(emptyItem, form)
+        val emptySnippet = SnippetCreationBean()
+        fieldGroup = BeanFieldGroup.bindFieldsUnbuffered(emptySnippet, form)
         setSizeFull()
         addComponent(form)
         setExpandRatio(form, 1f)

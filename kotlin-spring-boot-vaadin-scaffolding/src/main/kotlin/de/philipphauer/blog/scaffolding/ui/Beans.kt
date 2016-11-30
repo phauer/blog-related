@@ -3,13 +3,13 @@ package de.philipphauer.blog.scaffolding.ui
 import de.philipphauer.blog.scaffolding.db.SnippetState
 import java.time.Instant
 
-data class SnippetOverviewItem(
+data class SnippetOverviewBean(
         val code: String,
         val author: String,
         val date: Instant,
         val state: SnippetState
 )
-data class SnippetCreationItem(
+data class SnippetCreationBean(
         var code: String? = null,
         var author: String? = null
 )

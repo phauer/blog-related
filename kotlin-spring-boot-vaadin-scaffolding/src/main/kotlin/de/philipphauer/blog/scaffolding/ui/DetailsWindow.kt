@@ -6,10 +6,9 @@ import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui.Button
 import com.vaadin.ui.FormLayout
 import com.vaadin.ui.Label
-import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.Window
 
-class DetailsWindow(snippet: SnippetOverviewItem) : Window(){
+class DetailsWindow(snippet: SnippetOverviewBean) : Window(){
     init {
         caption = "Snippet Details"
         isModal = true
