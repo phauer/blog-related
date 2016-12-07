@@ -34,17 +34,21 @@ open class NavigationPresenter(val navigator: SpringNavigator){
         return menu.addItem(label, icon, MenuBar.Command { navigateTo(viewAnnotation.name )})
     }
 
-    fun navigateToCurrentView(){
-        when (Page.getCurrent().uriFragment?.removePrefix("!")) {
-            CreateSnippetView.VIEW_NAME -> navigateTo(CreateSnippetView.VIEW_NAME)
-            null, OverviewView.VIEW_NAME -> navigateTo(OverviewView.VIEW_NAME)
+    fun navigateTo(view: String) {
+        navigator.navigateTo(view)
+        disableMenuItem(view)
+    }
+
+    fun disableMenuItem(view: String) {
+        for ((viewName, menuItem) in viewNameToMenuBar){
+            menuItem.isEnabled = viewName != view
         }
     }
 
-    fun navigateTo(view: String) {
-        navigator.navigateTo(view)
-        for ((viewName, menuItem) in viewNameToMenuBar){
-            menuItem.isEnabled = viewName != view
+    fun disableCurrentCurrentMenuItem() {
+        when (Page.getCurrent().uriFragment?.removePrefix("!")) {
+            CreateSnippetView.VIEW_NAME -> disableMenuItem(CreateSnippetView.VIEW_NAME)
+            null, OverviewView.VIEW_NAME -> disableMenuItem(OverviewView.VIEW_NAME)
         }
     }
 }
