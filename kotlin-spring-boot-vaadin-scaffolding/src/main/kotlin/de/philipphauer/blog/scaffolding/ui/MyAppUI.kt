@@ -25,7 +25,7 @@ class MyAppUI(val mainContent: MainViewDisplay, navigator: SpringNavigator) : UI
                 .add(navigationPresenter.menu)
                 .expand(mainContent)
                 .withFullHeight()
-        navigationPresenter.disableCurrentCurrentMenuItem()
+        navigationPresenter.disableCurrentMenuItem()
     }
 
     private fun  createHeader(): Label {

@@ -45,7 +45,7 @@ open class NavigationPresenter(val navigator: SpringNavigator){
         }
     }
 
-    fun disableCurrentCurrentMenuItem() {
+    fun disableCurrentMenuItem() {
         when (Page.getCurrent().uriFragment?.removePrefix("!")) {
             CreateSnippetView.VIEW_NAME -> disableMenuItem(CreateSnippetView.VIEW_NAME)
             null, OverviewView.VIEW_NAME -> disableMenuItem(OverviewView.VIEW_NAME)
