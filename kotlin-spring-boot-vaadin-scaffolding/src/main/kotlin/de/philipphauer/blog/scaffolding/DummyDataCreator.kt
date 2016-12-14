@@ -18,7 +18,7 @@ class DummyDataCreator(val repo: SnippetRepository, val logger: Logger) : Applic
         if (count == 0L){
             logger.info("Inserting dummy data...")
             val entity = SnippetEntity(
-                    id = null, //set by db
+                    id =    null, //set by db
                     code = "Select * From dual;",
                     date = Instant.now(),
                     state = SnippetState.ACTIVATED,

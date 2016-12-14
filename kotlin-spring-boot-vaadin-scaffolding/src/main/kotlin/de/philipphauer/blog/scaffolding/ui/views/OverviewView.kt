@@ -44,13 +44,14 @@ class OverviewView(val repo: SnippetRepository, val config: MyAppConfig) : Verti
             setColumnHeader(PropertyIds.STATE, Labels.STATE)
             sort(arrayOf(PropertyIds.DATE), booleanArrayOf(false))
             addGeneratedColumn(PropertyIds.CODE, ShortenedValueColumnGenerator)
-            addGeneratedColumn("Details", DetailsLinkColumnGenerator)
+            addGeneratedColumn("Details", ::generateDetailsButton)
         }
         setSizeFull()
         addComponent(table)
     }
 }
 
+//a) ColumnGenerator as singleton object (you want to want to group multiple fields and methods OR when your have more than one method (e.g. Converter))
 private object ShortenedValueColumnGenerator : Table.ColumnGenerator {
     private val MAX_LENGTH = 20
 
@@ -67,15 +68,12 @@ private object ShortenedValueColumnGenerator : Table.ColumnGenerator {
     }
 }
 
-private object DetailsLinkColumnGenerator : Table.ColumnGenerator {
-    override fun generateCell(source: Table, itemId: Any, columnId: Any): Any {
-        return Button("Details").apply {
-            addStyleName(ValoTheme.BUTTON_LINK)
-            addClickListener {
-                val item = source.getItem(itemId) as BeanItem<SnippetOverviewBean>
-                val window = DetailsWindow(item.bean)
-                UI.getCurrent().addWindow(window)
-            }
-        }
+//b) ColumnGenerator as top-level function. Pass as method reference. very concise.
+private fun generateDetailsButton(source: Table, itemId: Any, columnId: Any) = Button("Details").apply {
+    addStyleName(ValoTheme.BUTTON_LINK)
+    addClickListener {
+        val item = source.getItem(itemId) as BeanItem<SnippetOverviewBean>
+        val window = DetailsWindow(item.bean)
+        UI.getCurrent().addWindow(window)
     }
 }
