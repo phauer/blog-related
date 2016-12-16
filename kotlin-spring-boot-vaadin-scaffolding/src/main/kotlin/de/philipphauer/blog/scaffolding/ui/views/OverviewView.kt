@@ -87,8 +87,8 @@ private fun generateDetailsButton(source: Table, itemId: Any, columnId: Any) = B
 //"object" singleton useful for interfaces with more than one method. only if stateless.
 object StringToInstantConverter : Converter<String, Instant> {
     private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss Z")
-            .withLocale( Locale.UK )
-            .withZone( ZoneOffset.UTC )
+            .withLocale(Locale.UK)
+            .withZone(ZoneOffset.UTC)
 
     override fun getPresentationType() = String::class.java
     override fun getModelType() = Instant::class.java
