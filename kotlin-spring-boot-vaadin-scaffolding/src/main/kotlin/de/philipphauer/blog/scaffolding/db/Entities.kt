@@ -8,7 +8,7 @@ import java.time.Instant
 
 @Document(collection="snippets")
 data class SnippetEntity @PersistenceConstructor constructor(
-        @Id val id: ObjectId?,
+        @Id val id: ObjectId? = null, //default parameter value requires @PersistenceConstructor
         val code: String,
         val author: AuthorEntity,
         val date: Instant,
