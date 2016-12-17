@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope
 
 
 @Configuration
-open class MyAppSpringConfiguration {
+open class SpringConfiguration {
 
     @Bean
     @Scope("prototype")
