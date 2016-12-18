@@ -15,4 +15,9 @@ vaadin:
   servlet:
     productionMode: false
 myapp:
-  myprop: "value"
+  requiredProp: "value"
+  authentication:
+    url: "https://blabla.de"
+    credentials:
+      userName: "asdf"
+      userPassword: "asdf"
