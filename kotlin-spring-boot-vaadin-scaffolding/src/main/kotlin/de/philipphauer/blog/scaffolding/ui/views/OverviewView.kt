@@ -93,10 +93,10 @@ object StringToInstantConverter : Converter<String, Instant> {
     override fun getPresentationType() = String::class.java
     override fun getModelType() = Instant::class.java
 
+    override fun convertToPresentation(value: Instant?, targetType: Class<out String>?, locale: Locale?)
+            = DATE_FORMATTER.format(value)!!
+
     override fun convertToModel(value: String?, targetType: Class<out Instant>?, locale: Locale?): Instant {
         throw UnsupportedOperationException("Not yet implemented")
     }
-
-    override fun convertToPresentation(value: Instant?, targetType: Class<out String>?, locale: Locale?)
-            = DATE_FORMATTER.format(value)!!
 }
