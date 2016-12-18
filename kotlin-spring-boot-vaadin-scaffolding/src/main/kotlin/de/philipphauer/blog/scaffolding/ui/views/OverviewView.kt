@@ -11,7 +11,7 @@ import com.vaadin.ui.Table
 import com.vaadin.ui.UI
 import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.themes.ValoTheme
-import de.philipphauer.blog.scaffolding.MyAppConfig
+import de.philipphauer.blog.scaffolding.MyAppProps
 import de.philipphauer.blog.scaffolding.db.SnippetRepository
 import de.philipphauer.blog.scaffolding.ui.DetailsWindow
 import de.philipphauer.blog.scaffolding.ui.Labels
@@ -26,7 +26,7 @@ import javax.annotation.PostConstruct
 
 
 @SpringView(name = OverviewView.VIEW_NAME)
-class OverviewView(val repo: SnippetRepository, val config: MyAppConfig) : VerticalLayout(), View {
+class OverviewView(val repo: SnippetRepository, val props: MyAppProps) : VerticalLayout(), View {
 
     companion object {
         const val VIEW_NAME = ""
