@@ -47,6 +47,9 @@ open class AdminResource(val mongo: MongoTemplate) {
     @GetMapping("favicon.ico")
     fun favicon() = "forward:/VAADIN/themes/mytheme/favicon.ico"
 
+    @GetMapping("/")
+    fun redirectToUI() = "redirect:/ui"
+
     //the values won't be set when you start the application in the IDE.
     private fun createVersionDTO() = readGitProperties().let {
         VersionDTO(name = "myapp",
