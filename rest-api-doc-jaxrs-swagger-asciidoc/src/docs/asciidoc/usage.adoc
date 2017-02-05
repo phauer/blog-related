@@ -1,0 +1,21 @@
+
+== Usage
+
+Even more manually written documentation. For instance, you can describe common use cases or workflows for your API here.
+
+=== Retrieve all Bands
+
+Just call `GET` on the `link:#_getbands[/bands]` resource. It will return link:#_payload_for_band_retrieval[band objects].
+
+[source,json]
+----
+[
+    {
+        "foundation": 1997,
+        "id": "faf86775-ca8e-414b-bfe3-fbe2cd378a05",
+        "name": "Flogging Molly"
+    }
+]
+----
+
+As you can see, you can also link to the generated documentation.
