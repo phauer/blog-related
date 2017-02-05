@@ -1,0 +1,6 @@
+version: '2'
+services:
+  swagger_ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8090:8080"

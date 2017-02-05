@@ -1,6 +1,7 @@
 package de.philipphauer.blog;
 
 import de.philipphauer.blog.resources.BandResource;
+import de.philipphauer.blog.resources.CORSFilter;
 import de.philipphauer.blog.resources.DocumentationResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -26,6 +27,7 @@ public class RestApiDocApplication extends Application<RestApiDocConfiguration> 
                     final Environment environment) {
         environment.jersey().register(BandResource.class);
         environment.jersey().register(DocumentationResource.class);
+        environment.jersey().register(CORSFilter.class);
     }
 
 }

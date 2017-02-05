@@ -38,8 +38,8 @@ public class SwaggerAndAsciiDocGenerator {
         config.setVersion("v1");
         config.setTitle("Band API");
         config.setDescription("An API to retrieve and create bands.");
-        config.setSchemes(new String[]{"https"});
-        config.setHost("`super.domain.de`");
+        config.setSchemes(new String[]{"http"});
+        config.setHost("localhost:8080");
         config.setBasePath("");
         config.setResourcePackage("de.philipphauer.blog.resources");
         config.setScan();//this "setter" triggers the scanning... nice API...
