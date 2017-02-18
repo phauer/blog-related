@@ -42,7 +42,7 @@ public class SwaggerAndAsciiDocGenerator {
         config.setHost("localhost:8080");
         config.setBasePath("");
         config.setResourcePackage("de.philipphauer.blog.resources");
-        config.setScan();//this "setter" triggers the scanning... nice API...
+        config.setScan();//this "setter" triggers the scanning... nice naming...
         Swagger swagger = config.getSwagger();
 
         String json = Json.pretty().writeValueAsString(swagger);
