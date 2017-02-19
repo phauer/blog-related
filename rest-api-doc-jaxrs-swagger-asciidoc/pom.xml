@@ -60,6 +60,13 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
+                <configuration>
+                    <mainClass>de.philipphauer.blog.apiDocGen.SwaggerAndAsciiDocGenerator</mainClass>
+                    <arguments>
+                        <argument>${project.build.outputDirectory}</argument> <!-- target/classes -->
+                        <argument>${generated.asciidoc.directory}</argument>
+                    </arguments>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-swagger-and-asciidoc</id>
@@ -69,13 +76,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>de.philipphauer.blog.apiDocGen.SwaggerAndAsciiDocGenerator</mainClass>
-                    <arguments>
-                        <argument>${project.build.outputDirectory}</argument> <!-- target/classes -->
-                        <argument>${generated.asciidoc.directory}</argument>
-                    </arguments>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
