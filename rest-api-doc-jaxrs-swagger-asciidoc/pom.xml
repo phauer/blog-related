@@ -47,6 +47,7 @@
             <artifactId>swagger-jersey2-jaxrs</artifactId>
             <version>1.5.10</version>
         </dependency>
+        <!-- don't forget to declare the jcenter repository (see below) -->
         <dependency>
             <groupId>io.github.swagger2markup</groupId>
             <artifactId>swagger2markup</artifactId>
