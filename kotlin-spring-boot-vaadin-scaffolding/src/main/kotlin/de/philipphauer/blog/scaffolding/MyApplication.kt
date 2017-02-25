@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableScheduling
-open class MyApplication
+class MyApplication
 
 fun main(args: Array<String>) {
     SpringApplication.run(MyApplication::class.java, *args)

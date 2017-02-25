@@ -6,14 +6,14 @@ import javax.validation.constraints.NotNull
 
 @Configuration
 @ConfigurationProperties(prefix = "myapp")
-open class MyAppProps {
+class MyAppProps {
     @NotNull lateinit var requiredProp: String
     var optionalProp: String? = null
 }
 
 @Configuration
 @ConfigurationProperties(prefix = "myapp.authentication")
-open class AuthenticationProps {
+class AuthenticationProps {
     @NotNull lateinit var url: String
     var credentials: Credentials? = null
 }

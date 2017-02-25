@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Scope
 
 
 @Configuration
-open class SpringConfiguration {
+class SpringConfiguration {
 
     @Bean
     @Scope("prototype")
-    open fun logger(injectionPoint: InjectionPoint): Logger {
+    fun logger(injectionPoint: InjectionPoint): Logger {
         return LoggerFactory.getLogger(injectionPoint.methodParameter.containingClass)
     }
 }

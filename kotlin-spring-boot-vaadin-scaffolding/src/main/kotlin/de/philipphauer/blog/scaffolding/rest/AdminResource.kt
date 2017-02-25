@@ -19,7 +19,7 @@ private const val INITIAL_MONGO_CHECK_DELAY_MS = 2000L
 private const val MONGO_CHECK_INTERVAL_MS = 20000L
 
 @Controller
-open class AdminResource(val mongo: MongoTemplate) {
+class AdminResource(val mongo: MongoTemplate) {
 
     val versionDTO: VersionDTO by lazy { createVersionDTO() }
 

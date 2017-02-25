@@ -2,14 +2,15 @@ package de.philipphauer.blog.scaffolding.ui
 
 import com.vaadin.annotations.Theme
 import com.vaadin.server.FontAwesome
+import com.vaadin.server.Sizeable
 import com.vaadin.server.VaadinRequest
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.spring.annotation.SpringUI
 import com.vaadin.spring.navigator.SpringNavigator
 import com.vaadin.ui.Label
 import com.vaadin.ui.UI
+import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.themes.ValoTheme
-import org.vaadin.viritin.layouts.MVerticalLayout
 
 
 @SpringUI(path = "ui")
@@ -20,11 +21,11 @@ class MyAppUI(val mainContent: MainViewDisplay, navigator: SpringNavigator) : UI
 
     override fun init(request: VaadinRequest) {
         page.setTitle("Kotlin, Spring Boot, Vaadin")
-        content = MVerticalLayout()
-                .add(createHeader())
-                .add(navigationPresenter.menu)
-                .expand(mainContent)
-                .withFullHeight()
+        content = VerticalLayout(createHeader(), navigationPresenter.menu, mainContent).apply{
+            setExpandRatio(mainContent, 1f)
+            setHeight(100f, Sizeable.Unit.PERCENTAGE)
+            setMargin(true)
+        }
         navigationPresenter.disableCurrentMenuItem()
     }
 

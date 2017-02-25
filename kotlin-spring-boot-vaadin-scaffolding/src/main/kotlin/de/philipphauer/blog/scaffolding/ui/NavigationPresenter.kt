@@ -12,7 +12,7 @@ import de.philipphauer.blog.scaffolding.ui.views.CreateSnippetView
 import de.philipphauer.blog.scaffolding.ui.views.ErrorView
 import de.philipphauer.blog.scaffolding.ui.views.OverviewView
 
-open class NavigationPresenter(val navigator: SpringNavigator){
+class NavigationPresenter(val navigator: SpringNavigator){
 
     val menu: MenuBar
     private val viewNameToMenuBar: Map<String, MenuBar.MenuItem>
