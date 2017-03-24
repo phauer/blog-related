@@ -18,6 +18,7 @@ data class Person2(val name: String)
 
 // ## use pure functions (without side-effects) where ever possible (therefore, use expressions and single expression functions)
 // ## use if, when, try-catch, single expression function! -> concise, expressive, stateless
+// expression instead of statements  (if, when) -> combine control structure with other expression concisely
 // Don't:
 fun getDefaultLocale(deliveryArea: String): Locale {
     val deliverAreaLower = deliveryArea.toLowerCase()
@@ -41,6 +42,7 @@ fun getDefaultLocale2(deliveryArea: String) = when (deliveryArea.toLowerCase()) 
     else -> Locale.ENGLISH
 }
 //println(getDefaultLocale("germany"))
+// in general: consider if an `if` can be replace with a more concise `when` expression.
 
 //try-catch is also an expression!
 val json = """{"message":"HELLO"}"""

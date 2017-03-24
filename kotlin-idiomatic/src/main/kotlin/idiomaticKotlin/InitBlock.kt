@@ -43,3 +43,6 @@ class UsersClient2(baseUrl: String, appName: String) {
         //call service using httpClient and usersUrl
     }
 }
+
+//- `with()` returns result of lambda (and it's invoked statically)
+//- `apply()` returns receiver obj (and it's invoked on receiver obj)
