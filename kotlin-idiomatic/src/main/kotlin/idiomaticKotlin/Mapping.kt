@@ -30,9 +30,18 @@ fun mapToDTO2(entity: SnippetEntity): SnippetDTO {
 
 // Do
 // DONE easy, concise and readable mapping between value objects with single expression functions and named arguments
-fun mapToDTO(entity: SnippetEntity) = SnippetDTO(
+fun mapToDTO2(entity: SnippetEntity) = SnippetDTO(
         code = entity.code,
         date = entity.date,
         author = "${entity.author.firstName} ${entity.author.lastName}"
 )
 
+// even better: as an extension function
+fun SnippetEntity.toDTO() = SnippetDTO(
+        code = code,
+        date = date,
+        author = "${author.firstName} ${author.lastName}"
+)
+
+//val entity = SnippetEntity()
+//val dto = entity.toDTO()
