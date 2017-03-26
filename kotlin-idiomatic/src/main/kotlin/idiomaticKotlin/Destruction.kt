@@ -2,16 +2,14 @@ package idiomaticKotlin
 
 //destruction useful for
 
-//a) returning multiple values from a function (define an own data class or use Pair (but less expressive))
+//a) returning multiple values from a function. define an own data class or use Pair (but less expressive, no semantics)
 data class ServiceConfig(val host: String, val port: Int)
-
-fun getServiceConfig(): ServiceConfig {
-    //...
+fun createServiceConfig(): ServiceConfig {
     return ServiceConfig("api.domain.io", 9389)
 }
 
 fun bla(){
-    val (host, port) = getServiceConfig()
+    val (host, port) = createServiceConfig()
 }
 
 //b) iterate over maps
