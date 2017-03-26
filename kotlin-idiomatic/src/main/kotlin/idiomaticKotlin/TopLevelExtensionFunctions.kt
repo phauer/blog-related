@@ -6,12 +6,12 @@ object StringUtil {
         return string.length - string.replace("x", "").length
     }
 }
-StringUtil.countAmountOfX("xKotlinxFunx") //3
+//StringUtil.countAmountOfX("xKotlinxFunx") //3
 
 // In Kotlin, remove the unnecessary wrapping util class and use top-level functions instead
 // Often, you can additionally use extension functions, which increases readability ("like a story").
 fun String.countAmountOfX(): Int {
     return length - replace("x", "").length
 }
-"xKotlinxFunx".countAmountOfX() //3
+//"xKotlinxFunx".countAmountOfX() //3
 

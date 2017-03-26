@@ -19,7 +19,7 @@ data class AuthorEntity(
 )
 
 // Don't
-fun mapToDTO2(entity: SnippetEntity): SnippetDTO {
+fun mapToDTO(entity: SnippetEntity): SnippetDTO {
     val dto = SnippetDTO(
             code = entity.code,
             date = entity.date,
