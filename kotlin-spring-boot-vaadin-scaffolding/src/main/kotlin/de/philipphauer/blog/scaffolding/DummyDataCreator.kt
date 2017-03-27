@@ -21,7 +21,7 @@ class DummyDataCreator(val repo: SnippetRepository, val logger: Logger) : Applic
                     id =    null, //set by db
                     code = "Select * From dual;",
                     date = Instant.now(),
-                    state = SnippetState.ACTIVATED,
+                    state = SnippetState.EXECUTION_SUCCESS,
                     author = AuthorEntity(
                             firstName = "Peter",
                             lastName = "Fischer"

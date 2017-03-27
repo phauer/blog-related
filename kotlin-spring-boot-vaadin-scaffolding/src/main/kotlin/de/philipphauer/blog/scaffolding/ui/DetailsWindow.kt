@@ -20,14 +20,14 @@ class DetailsWindow(snippet: SnippetOverviewBean) : Window(){
                 caption = Labels.CODE
                 value = snippet.code
             }
+            val authorLabel = Label().apply {
+                caption = Labels.AUTHOR
+                value = snippet.author
+            }
             val stateLabel = Label().apply {
                 contentMode = ContentMode.HTML
                 caption = Labels.STATE
                 value = "${snippet.state.toIcon().html} ${snippet.state.toLabel()}"
-            }
-            val authorLabel = Label().apply {
-                caption = Labels.AUTHOR
-                value = snippet.author
             }
             val closeButton = Button("Close", FontAwesome.CLOSE).apply {
                 addClickListener { close() }

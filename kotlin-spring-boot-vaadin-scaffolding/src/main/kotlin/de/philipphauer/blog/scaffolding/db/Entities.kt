@@ -20,4 +20,4 @@ data class AuthorEntity(
         val lastName: String
 )
 
-enum class SnippetState {ACTIVATED, DEACTIVATED}
+enum class SnippetState {EXECUTION_SUCCESS, EXECUTION_FAIL}

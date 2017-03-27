@@ -48,6 +48,7 @@ class CreateSnippetView(val repo: SnippetRepository) : VerticalLayout(), View {
     private fun createSnippet() {
         if (fieldGroup.isValid){
             Notification.show("Snippet: ${fieldGroup.itemDataSource.bean}")
+            // Snippet creation should go here...
         } else {
             Notification.show("Invalid!", Notification.Type.ERROR_MESSAGE)
         }
