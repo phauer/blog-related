@@ -12,7 +12,7 @@ import java.util.Locale
 // use object for singletons or implemention of a framework interface without state.
 // here: Vaadin 8's Converter interface
 object StringToInstantConverter : Converter<String, Instant> {
-    private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss Z")
+    private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss Z")
             .withLocale( Locale.UK )
             .withZone( ZoneOffset.UTC )
 
