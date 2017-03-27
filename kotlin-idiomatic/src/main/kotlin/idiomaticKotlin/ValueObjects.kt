@@ -1,10 +1,10 @@
 package idiomaticKotlin
 
-data class EmailAddress(val address: String)
+data class EmailAddress(val value: String)
 
 //without value object:
-fun process1(email: String){}
+fun send(target: String){}
 
 //with value object:
-fun process2(email:EmailAddress){}
+fun send(target:EmailAddress){}
 //=> expressive, readable, safe
