@@ -60,4 +60,6 @@ fun handle(){
     // with let(), there is no need for an extra variable
     // can write as one expression
     findOrder()?.let { dun(it.customer) }
+    findOrder()?.customer?.let(::dun)
+
 }
