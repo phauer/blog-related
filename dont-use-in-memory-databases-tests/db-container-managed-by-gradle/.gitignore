@@ -1,5 +1,5 @@
 .gradle/
 .idea/
-gradle/wrapper/gradle-wrapper.jar
 out/
 build/
+*.iml
