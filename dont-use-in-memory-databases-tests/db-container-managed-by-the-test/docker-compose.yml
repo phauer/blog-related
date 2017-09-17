@@ -1,0 +1,9 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.5.53
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "testdb"
