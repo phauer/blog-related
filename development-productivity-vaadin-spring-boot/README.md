@@ -9,6 +9,7 @@ Build and Run
 Search in created jar
 
 ```bash
+./mvnw clean package
 unzip -l target/development-productivity-vaadin-spring-boot*.jar | grep css 
 ```
 
@@ -18,7 +19,11 @@ Compile Vaadin Theme
 ./mvnw vaadin:compile-theme 
 ```
 
-# Notes
+# Side Notes
 
-- The `styles.css` are not found in the jar if we put the theme in the webapp folder (instead of resources), but it somehow works anyway...
-- Vaadin's on-the-fly sass compilation only works if we put the themes under `webapp` instead of `resources`
+Where to put `VAADIN/themes/mytheme`? `src/main/resources` or `src/main/webapp`? Vaadin's On-the-fly compilation works in both cases! (given: no there is no `styles.css` and `production-mode=false`)
+
+- `webapp`: sass changes are automatically detected and a recompilation is triggered. `styles.scss.cache` is created. no manual action required. But somehow, there is no `styles.css` in the built jar, although everything works fine.
+- `resources`: after a change (in let's say `mytheme.scss`), you have to hit `Ctrl+Shift+F9` in IDEA. Now, the change is detected and recompilation is triggered. There is no `styles.scss.cache`.
+  - Advantages: it's the [recommend location](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-web-applications.html#boot-features-spring-mvc-static-content) of spring boot! Moreover, you can find the generated styles.css in the jar!
+  - Drawback: more uncomfortable theme editing.

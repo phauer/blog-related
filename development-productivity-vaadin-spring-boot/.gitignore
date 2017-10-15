@@ -25,3 +25,5 @@ nbdist/
 
 src/main/webapp/VAADIN/themes/mytheme/styles.css
 src/main/webapp/VAADIN/themes/mytheme/styles.scss.cache
+
+src/main/resources/VAADIN/themes/mytheme/styles.css
