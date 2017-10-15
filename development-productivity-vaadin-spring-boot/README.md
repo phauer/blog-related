@@ -21,7 +21,7 @@ Compile Vaadin Theme
 
 # Side Notes
 
-Where to put `VAADIN/themes/mytheme`? `src/main/resources` or `src/main/webapp`? Vaadin's On-the-fly compilation works in both cases! (given: no there is no `styles.css` (`src` and `target/classes`) and `production-mode=false`)
+Where to put `VAADIN/themes/mytheme`? `src/main/resources` or `src/main/webapp`? Vaadin's on-the-fly compilation works in both cases! (given: there is no `styles.css` (`src` and `target/classes`) and `production-mode=false`)
 
 - `webapp`: sass changes are automatically detected and a recompilation is triggered. `styles.scss.cache` is created. no manual action required. But somehow, there is no `styles.css` in the built jar, although everything works fine.
 - `resources`: after a change (in let's say `mytheme.scss`), you have to hit `Ctrl+Shift+F9` in IDEA. Now, the change is detected and recompilation is triggered. There is no `styles.scss.cache` at all.
