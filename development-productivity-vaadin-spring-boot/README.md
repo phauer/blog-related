@@ -4,18 +4,25 @@
 
 - analyze dev tools
 
-# Build and Run
+# Some Commands 
+
+Build and Run
 
 ```bash
 ./mvnw clean package && java -jar target/development-productivity-vaadin-spring-boot*.jar
 ```
 
-# Search in created archives
+Search in created archives
 
 ```bash
 unzip -l target/development-productivity-vaadin-spring-boot*.jar | grep css 
 ```
 
+Compile Vaadin Theme
+
+```bash
+./mvnw vaadin:compile-theme 
+```
 
 # notes
 
