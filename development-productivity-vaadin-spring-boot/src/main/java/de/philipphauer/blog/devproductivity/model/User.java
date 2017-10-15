@@ -1,20 +1,18 @@
 package de.philipphauer.blog.devproductivity.model;
 
-import java.util.UUID;
-
 public class User {
-    private UUID id;
+    private int id;
     private String firstName;
     private String lastName;
     private int age;
     private Role role;
     private boolean active;
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public User setId(UUID id) {
+    public User setId(int id) {
         this.id = id;
         return this;
     }

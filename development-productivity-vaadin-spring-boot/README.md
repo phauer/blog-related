@@ -2,21 +2,7 @@
 
 # TODO
 
-- add simple application (like scaffolding example)
-    - add some SpringViews to keep app more busy during startup!
-- add theme compilation to build
-- custom theme to demonstrate time for theme compilation
-    - measure
-- productionMode flag in application.properties
-    - measure
-- lazy vs eager servlet loading
-    - measure
 - analyze dev tools
-
-- measure:
-            RUN     DEBUG
-plain       TODO
-vm args
 
 # Build and Run
 
@@ -24,6 +10,14 @@ vm args
 ./mvnw clean package && java -jar target/development-productivity-vaadin-spring-boot*.jar
 ```
 
+# Search in created archives
+
+```bash
+unzip -l target/development-productivity-vaadin-spring-boot*.jar | grep css 
+```
+
+
 # notes
 
+- the `styles.css` are not found in the jar if we put the theme in the webapp folder (instead of resources), but it somehow works...
 - vaadin on-the-fly sass compilation only works if we put the themes under `webapp` instead of `resources`

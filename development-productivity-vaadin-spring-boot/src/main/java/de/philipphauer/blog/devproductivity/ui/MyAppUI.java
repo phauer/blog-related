@@ -12,7 +12,7 @@ import de.philipphauer.blog.devproductivity.model.Role;
 import de.philipphauer.blog.devproductivity.model.User;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +39,8 @@ public class MyAppUI extends UI {
     }
 
     private List<User> generateDummyUsers() {
-        return Stream.generate(UUID::randomUUID)
+        Random random = new Random();
+        return Stream.generate(() -> random.nextInt(9999))
                 .limit(50)
                 .map(uuid -> new User()
                         .setId(uuid)
