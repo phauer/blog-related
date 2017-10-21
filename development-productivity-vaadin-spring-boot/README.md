@@ -19,6 +19,8 @@ Compile Vaadin Theme
 ./mvnw vaadin:compile-theme 
 ```
 
+Check out `src/main/resources/application.properties`.
+
 # Side Notes
 
 Where to put `VAADIN/themes/mytheme`? `src/main/resources` or `src/main/webapp`? Vaadin's on-the-fly compilation works in both cases! (given: there is no `styles.css` (`src` and `target/classes`) and `production-mode=false`)

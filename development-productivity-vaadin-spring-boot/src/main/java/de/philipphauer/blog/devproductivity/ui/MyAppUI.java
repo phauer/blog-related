@@ -36,6 +36,8 @@ public class MyAppUI extends UI {
         layout.addComponent(heading);
         layout.addComponentsAndExpand(table);
         setContent(layout);
+
+        System.out.println("Session Object ID:"+getSession().hashCode());
     }
 
     private List<User> generateDummyUsers() {
