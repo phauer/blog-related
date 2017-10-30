@@ -16,7 +16,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SpringUI(path = "ui")
+@SpringUI(path = "")
 @Theme("mytheme")
 public class MyAppUI extends UI {
 
