@@ -1,5 +1,6 @@
 package de.philipphauer.blog
 
+import de.philipphauer.blog.util.FunctionsMySQL
 import org.eclipse.jetty.server.NCSARequestLog
 import org.eclipse.jetty.server.Server
 import org.h2.jdbcx.JdbcDataSource
@@ -30,6 +31,7 @@ private fun bootstrapDesignResource(): DesignResource {
         password = ""
         setURL("jdbc:h2:mem:access;MODE=MySQL;DB_CLOSE_DELAY=-1")
     }
+    FunctionsMySQL.register(dataSource.connection)
     ScriptUtils.executeSqlScript(dataSource.connection,  ClassPathResource("create-designs-table.sql"))
     val dao = DesignDAO(dataSource)
     return DesignResource(dao)
