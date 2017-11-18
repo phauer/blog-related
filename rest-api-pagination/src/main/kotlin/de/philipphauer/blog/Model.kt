@@ -1,15 +1,13 @@
 package de.philipphauer.blog
 
-import java.net.URL
-
-data class DesignDTO(
-        val id: String,
+data class Design(
+        val id: Int,
         val title: String,
-        val imageUrl: URL
+        val imageUrl: String
 )
 
-data class DesignsPageDTO(
-        val designs: List<DesignDTO>,
+data class DesignsPage(
+        val designs: List<Design>,
         /** contains continuation token */
-        val nextPage: URL
+        val nextPage: String
 )
