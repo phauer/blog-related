@@ -20,19 +20,20 @@ internal class DesignResourceTest {
     private val creator = DesignCreator(dataSource)
 
     @Test
-    fun `get design without token`() {
-        creator.createDesigns(amount = 20)
+    fun `happy path`() {
+        creator.createDesigns(amount = 10)
         val response = resource.getDesigns(Request(Method.GET, "/designs?pageSize=3"))
 
         println(response)
 //        assertThat(response.toPageable().nextPage).contains("?continue=TODO")
     }
 
-    //TODO test:
+    //TODO test: find better test abstraction. e.g. PaginationTest
     // page with same key/ts
     // final page (amount < page size and = page size)
     // first element of next page: a) is first one with new key, b) not the same one
     // empty result
+    // correct page size
     // no `nextPage` in last page
     // checksum usage
 

@@ -8,8 +8,8 @@ import org.http4k.core.Status
 
 class DesignResource(val dao: DesignDAO) {
 
-    //TODO some pages in the middle are not full
     //TODO no next page on last page
+    //TODO checksum
 
     fun getDesigns(request: Request): Response {
         val token = request.query("continue")?.toContinuationToken()
