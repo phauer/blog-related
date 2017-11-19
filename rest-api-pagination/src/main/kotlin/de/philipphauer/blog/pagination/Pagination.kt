@@ -24,10 +24,24 @@ object Pagination{
         }
     }
 
+    //TODO test properly
+    fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
+        if (token == null){
+            return QueryAdvice(
+                    limit = pageSize,
+                    timestamp = 0
+            )
+        }
+        return QueryAdvice(
+                limit = token.offset + pageSize,
+                timestamp = token.timestamp
+        )
+    }
+
     private fun skipOffset(allEntitiesSinceIncludingKey: List<Pageable>, currentToken: ContinuationToken) =
             allEntitiesSinceIncludingKey.subList(currentToken.offset, allEntitiesSinceIncludingKey.size)
 
-    fun createToken(entities: List<Pageable>): ContinuationToken {
+    private fun createToken(entities: List<Pageable>): ContinuationToken {
         val highestEntities = getEntitiesWithHighestKey(entities)
         val highestTimestamp = highestEntities.last().getKey()
         val ids = highestEntities.map(Pageable::getIdentifier)
@@ -57,20 +71,6 @@ object Pagination{
             i--
         }
         return entitiesWithHighestTimestamp.reversed()
-    }
-
-    //TOOD test properly
-    fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
-        if (token == null){
-            return QueryAdvice(
-                    limit = pageSize,
-                    timestamp = 0
-            )
-        }
-        return QueryAdvice(
-                limit = token.offset - 1 + pageSize,
-                timestamp = token.timestamp
-        )
     }
 
 }
