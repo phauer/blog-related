@@ -2,7 +2,6 @@ package de.philipphauer.blog
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.philipphauer.blog.pagination.ContinuationToken
-import de.philipphauer.blog.pagination.Page
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
@@ -13,8 +12,8 @@ class DesignResource(val dao: DesignDAO) {
         val token = request.query("continue")?.toContinuationToken()
         val pageSize = request.query("pageSize")?.toInt() ?: 100
         val daoResult = dao.getDesigns(token, pageSize)
-        val dto = Page(
-                results = daoResult.designs,
+        val dto = PageDTO(
+                results = daoResult.designs.map(::mapToDTO),
                 nextPage = "https://www.domain.de/daoResult?continue=${daoResult.token}"
         )
         return Response(Status.OK)
@@ -22,6 +21,24 @@ class DesignResource(val dao: DesignDAO) {
                 .body(dto.toJson())
     }
 }
+
+private fun mapToDTO(entity: DesignEntity) = DesignDTO(
+        id = entity.id,
+        title = entity.title,
+        imageUrl = entity.imageUrl,
+        dateModified = entity.dateModified.epochSecond
+)
+
+data class DesignDTO(
+        val id: String,
+        val title: String,
+        val imageUrl: String,
+        val dateModified: Long
+)
+data class PageDTO(
+        val results: List<DesignDTO>,
+        val nextPage: String
+)
 
 private fun String.toContinuationToken(): ContinuationToken{
     val parts = this.split("_")
@@ -33,5 +50,5 @@ private fun String.toContinuationToken(): ContinuationToken{
 }
 
 private val mapper = jacksonObjectMapper()
-private fun Page.toJson() = mapper.writeValueAsString(this)
+private fun Any.toJson() = mapper.writeValueAsString(this)
 
