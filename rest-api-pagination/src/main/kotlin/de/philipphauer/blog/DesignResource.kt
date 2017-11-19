@@ -8,13 +8,16 @@ import org.http4k.core.Status
 
 class DesignResource(val dao: DesignDAO) {
 
+    //TODO some pages in the middle are not full
+    //TODO no next page on last page
+
     fun getDesigns(request: Request): Response {
         val token = request.query("continue")?.toContinuationToken()
         val pageSize = request.query("pageSize")?.toInt() ?: 100
         val daoResult = dao.getDesigns(token, pageSize)
         val dto = PageDTO(
                 results = daoResult.designs.map(::mapToDTO),
-                nextPage = "https://www.domain.de/daoResult?continue=${daoResult.token}"
+                nextPage = "http://localhost:8000/designs?pageSize=$pageSize&continue=${daoResult.token}"
         )
         return Response(Status.OK)
                 .header("Content-Type", "application/json;charset=UTF-8")

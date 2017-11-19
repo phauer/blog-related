@@ -1,5 +1,6 @@
 package de.philipphauer.blog
 
+import de.philipphauer.blog.util.DesignCreator
 import de.philipphauer.blog.util.FunctionsMySQL
 import org.eclipse.jetty.server.NCSARequestLog
 import org.eclipse.jetty.server.Server
@@ -33,6 +34,9 @@ private fun bootstrapDesignResource(): DesignResource {
     }
     FunctionsMySQL.register(dataSource.connection)
     ScriptUtils.executeSqlScript(dataSource.connection,  ClassPathResource("create-designs-table.sql"))
+
+    DesignCreator(dataSource).createDesigns(amount = 20)
+
     val dao = DesignDAO(dataSource)
     return DesignResource(dao)
 }
