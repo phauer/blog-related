@@ -10,14 +10,14 @@ internal class PaginationTest{
     //TODO test, if result test ends right into a page size. in this case, you must return a new token. which results in an empty result set! there is no way, that the server can now if it is null. test and implements
 
     @Test
-    fun `|1,2,3|4,5,6|`(){
+    fun `|1,2,3|4,5,6| different keys`(){
         //Page 1
-        val pageablesSinceToken = listOf(
+        val initialPageables = listOf(
                 TestPageable(1),
                 TestPageable(2),
                 TestPageable(3)
         )
-        val page = Pagination.createPage(pageablesSinceToken, null, 3)
+        val page = Pagination.createPage(initialPageables, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -28,12 +28,12 @@ internal class PaginationTest{
         ))
 
         //Page 2
-        val pageablesSinceToken2 = listOf(
+        val pageablesSinceKey = listOf(
                 TestPageable(4),
                 TestPageable(5),
                 TestPageable(6)
         )
-        val page2 = Pagination.createPage(pageablesSinceToken2, page.currentToken, 3)
+        val page2 = Pagination.createPage(pageablesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(4),
@@ -44,13 +44,49 @@ internal class PaginationTest{
         ))
     }
 
-    //TODO |1,2,3|4,5,6|
+    @Test
+    fun `|1,2,3|3,5,6| key 3 overlaps two pages`(){
+        //Page 1
+        val initialPageables = listOf(
+                TestPageable(1),
+                TestPageable(2),
+                TestPageable(3)
+        )
+        val page = Pagination.createPage(initialPageables, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(1),
+                        TestPageable(2),
+                        TestPageable(3)
+                ),
+                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+        ))
+
+        //Page 2
+        val pageablesSinceKey = listOf(
+                TestPageable("3", 3),
+                TestPageable("4", 3),
+                TestPageable("5", 5),
+                TestPageable("6", 6)
+        )
+        val page2 = Pagination.createPage(pageablesSinceKey, page.currentToken, 3)
+        assertThat(page2).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable("4", 3),
+                        TestPageable("5", 5),
+                        TestPageable("6", 6)
+                ),
+                currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+        ))
+    }
+
     //TODO |1,3,3|4,5,6|
-    //TODO |1,2,3|3,5,6|
     //TODO |1,3,3|3,5,6|
     //TODO |1,3,3|3,3,6|
     //TODO |1,2,3|3,3,6|
+    //TODO |1,2,3|4,4,6|
     //TODO |1,1,1|1,1,1|
+    //TODO |1,1,1|1,1,2|
 
     @Nested
     inner class `createPage` {
