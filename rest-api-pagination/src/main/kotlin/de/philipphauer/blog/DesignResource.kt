@@ -17,7 +17,7 @@ class DesignResource(val dao: DesignDAO) {
         val daoResult = dao.getDesigns(token, pageSize)
         val dto = PageDTO(
                 results = daoResult.designs.map(::mapToDTO),
-                nextPage = "http://localhost:8000/designs?pageSize=$pageSize&continue=${daoResult.token}"
+                nextPage = if (daoResult.token == null) null else "http://localhost:8000/designs?pageSize=$pageSize&continue=${daoResult.token}"
         )
         return Response(Status.OK)
                 .header("Content-Type", "application/json;charset=UTF-8")
@@ -40,7 +40,7 @@ data class DesignDTO(
 )
 data class PageDTO(
         val results: List<DesignDTO>,
-        val nextPage: String
+        val nextPage: String?
 )
 
 private fun String.toContinuationToken(): ContinuationToken{

@@ -18,8 +18,8 @@ class DesignDAO(dataSource: DataSource){
             ORDER BY dateModified asc, id asc
             LIMIT ${queryAdvice.limit};"""
         val designs = template.query(sql, this::mapToDesign)
-        val nextPage = Pagination.createNextPage(designs, token)
-        return DesignPageEntity(nextPage.entities as List<DesignEntity>, nextPage.nextToken)
+        val nextPage = Pagination.createPage(designs, token)
+        return DesignPageEntity(nextPage.entities as List<DesignEntity>, nextPage.currentToken)
     }
 
     private fun mapToDesign(rs: ResultSet, rowNum: Int) = DesignEntity(
@@ -33,5 +33,5 @@ class DesignDAO(dataSource: DataSource){
 
 data class DesignPageEntity(
         val designs: List<DesignEntity>,
-        val token: ContinuationToken
+        val token: ContinuationToken?
 )

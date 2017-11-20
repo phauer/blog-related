@@ -4,27 +4,24 @@ import java.util.zip.CRC32
 
 object Pagination{
 
-    fun createNextPage(allEntitiesSinceIncludingKey: List<Pageable>, currentToken: ContinuationToken?): Page {
-        if (currentToken == null){
-            val nextToken = createToken(allEntitiesSinceIncludingKey)
+    fun createPage(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken?): Page {
+        if (oldToken == null){
+            val token = createTokenForPage(currentEntitiesSinceIncludingKey)
             return Page(
-                    entities = allEntitiesSinceIncludingKey,
-                    currentToken = null,
-                    nextToken = nextToken
+                    entities = currentEntitiesSinceIncludingKey,
+                    currentToken = token
             )
         } else {
             //TODO mind checksum
-            val entities = skipOffset(allEntitiesSinceIncludingKey, currentToken)
-            val nextToken = createToken(entities)
+            val entities = skipOffset(currentEntitiesSinceIncludingKey, oldToken)
+            val token = createTokenForPage(entities)
             return Page(
                     entities = entities,
-                    currentToken = currentToken,
-                    nextToken = nextToken
+                    currentToken = token
             )
         }
     }
 
-    //TODO test properly
     fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
         if (token == null){
             return QueryAdvice(
@@ -41,7 +38,10 @@ object Pagination{
     private fun skipOffset(allEntitiesSinceIncludingKey: List<Pageable>, currentToken: ContinuationToken) =
             allEntitiesSinceIncludingKey.subList(currentToken.offset, allEntitiesSinceIncludingKey.size)
 
-    private fun createToken(entities: List<Pageable>): ContinuationToken {
+    internal fun createTokenForPage(entities: List<Pageable>): ContinuationToken? {
+        if (entities.isEmpty()){
+            return null
+        }
         val highestEntities = getEntitiesWithHighestKey(entities)
         val highestTimestamp = highestEntities.last().getKey()
         val ids = highestEntities.map(Pageable::getIdentifier)
