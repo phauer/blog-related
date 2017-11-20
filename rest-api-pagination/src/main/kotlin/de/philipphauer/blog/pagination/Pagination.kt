@@ -53,20 +53,22 @@ object Pagination{
         )
     }
 
-    private fun createCRC32Checksum(ids: List<String>): Long {
+    internal fun createCRC32Checksum(ids: List<String>): Long {
         val hash = CRC32()
         hash.update(ids.joinToString("_").toByteArray())
         return hash.value
     }
 
-    //TODO test this method dedicated!
-    private fun getEntitiesWithHighestKey(entities: List<Pageable>): List<Pageable> {
+    internal fun getEntitiesWithHighestKey(entities: List<Pageable>): List<Pageable> {
+        if (entities.isEmpty()){
+            return listOf()
+        }
         val highestTimestamp = entities.last().getKey()
         val entitiesWithHighestTimestamp = mutableListOf<Pageable>()
 
         val lastIndex = entities.size - 1
         var i = lastIndex
-        while (highestTimestamp == entities[i].getKey()) {
+        while (i >= 0 && highestTimestamp == entities[i].getKey()) {
             entitiesWithHighestTimestamp.add(entities[i])
             i--
         }
