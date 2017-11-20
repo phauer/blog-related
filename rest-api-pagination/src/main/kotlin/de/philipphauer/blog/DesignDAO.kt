@@ -18,7 +18,7 @@ class DesignDAO(dataSource: DataSource){
             ORDER BY dateModified asc, id asc
             LIMIT ${queryAdvice.limit};"""
         val designs = template.query(sql, this::mapToDesign)
-        val nextPage = Pagination.createPage(designs, token)
+        val nextPage = Pagination.createPage(designs, token, pageSize)
         return DesignPageEntity(nextPage.entities as List<DesignEntity>, nextPage.currentToken)
     }
 

@@ -6,18 +6,77 @@ import org.junit.jupiter.api.Test
 import java.util.zip.CRC32
 
 internal class PaginationTest{
+
+    //TODO test, if result test ends right into a page size. in this case, you must return a new token. which results in an empty result set! there is no way, that the server can now if it is null. test and implements
+
     @Test
-    fun `happy path`(){
-        //TODO
-//        val queryAdvice = Pagination.calculateQueryAdvice(token, pageSize)
-//        val sql = """SELECT * FROM designs
-//            WHERE UNIX_TIMESTAMP(dateModified) >= ${queryAdvice.timestamp}
-//            ORDER BY dateModified asc, id asc
-//            LIMIT ${queryAdvice.limit};"""
-//        val designs = template.query(sql, this::mapToDesign)
-//        val nextPage = Pagination.createPage(designs, token)
+    fun `|1,2,3|4,5,6|`(){
+        //Page 1
+        val pageablesSinceToken = listOf(
+                TestPageable(1),
+                TestPageable(2),
+                TestPageable(3)
+        )
+        val page = Pagination.createPage(pageablesSinceToken, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(1),
+                        TestPageable(2),
+                        TestPageable(3)
+                ),
+                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+        ))
+
+        //Page 2
+        val pageablesSinceToken2 = listOf(
+                TestPageable(4),
+                TestPageable(5),
+                TestPageable(6)
+        )
+        val page2 = Pagination.createPage(pageablesSinceToken2, page.currentToken, 3)
+        assertThat(page2).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(4),
+                        TestPageable(5),
+                        TestPageable(6)
+                ),
+                currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+        ))
     }
 
+    //TODO |1,2,3|4,5,6|
+    //TODO |1,3,3|4,5,6|
+    //TODO |1,2,3|3,5,6|
+    //TODO |1,3,3|3,5,6|
+    //TODO |1,3,3|3,3,6|
+    //TODO |1,2,3|3,3,6|
+    //TODO |1,1,1|1,1,1|
+
+    @Nested
+    inner class `createPage` {
+        @Nested
+        inner class `not under page size` {
+            @Test
+            fun `nothing to skip (offset 1 and next entity has new key)`() {
+                val token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                val pageablesSinceToken = listOf(
+                        TestPageable(4),
+                        TestPageable(5),
+                        TestPageable(6)
+                )
+                val page = Pagination.createPage(pageablesSinceToken, token, 3)
+                assertThat(page).isEqualTo(Page(
+                        entities = listOf(
+                                TestPageable(4),
+                                TestPageable(5),
+                                TestPageable(6)
+                        ),
+                        currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                ))
+            }
+            //TODO add more tests
+        }
+    }
 
     @Nested
     inner class `createToken` {
@@ -43,7 +102,6 @@ internal class PaginationTest{
             val token = Pagination.createTokenForPage(pageables)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
-        //TODO ContinuationToken should be 0 if last page has reached! this information is required here!
         @Test
         fun `all elements have same timestamp`() {
             val pageables = listOf(
@@ -66,11 +124,6 @@ internal class PaginationTest{
         fun `empty list`() {
             val token = Pagination.createTokenForPage(listOf())
             assertThat(token).isNull()
-        }
-        private fun checksum(vararg ids: String): Long{
-            val hash = CRC32()
-            hash.update(ids.joinToString("_").toByteArray())
-            return hash.value
         }
     }
 
@@ -140,6 +193,12 @@ internal class PaginationTest{
             assertThat(entities).containsExactly(TestPageable("1",1))
         }
     }
+}
+
+private fun checksum(vararg ids: String): Long{
+    val hash = CRC32()
+    hash.update(ids.joinToString("_").toByteArray())
+    return hash.value
 }
 
 data class TestPageable(

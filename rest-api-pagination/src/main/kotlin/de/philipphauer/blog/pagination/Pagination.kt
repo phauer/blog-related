@@ -4,8 +4,15 @@ import java.util.zip.CRC32
 
 object Pagination{
 
-    fun createPage(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken?): Page {
-        if (oldToken == null){
+    fun createPage(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
+        if (currentEntitiesSinceIncludingKey.size < requiredPageSize){
+            return Page(
+                    entities = currentEntitiesSinceIncludingKey,
+                    currentToken = null
+            )
+        }
+        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingKey, oldToken)){
+            //don't skip
             val token = createTokenForPage(currentEntitiesSinceIncludingKey)
             return Page(
                     entities = currentEntitiesSinceIncludingKey,
@@ -20,6 +27,11 @@ object Pagination{
                     currentToken = token
             )
         }
+    }
+
+    private fun currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken): Boolean {
+        val timestampOfFirstElement = currentEntitiesSinceIncludingKey.first().getKey()
+        return timestampOfFirstElement != oldToken.timestamp
     }
 
     fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
