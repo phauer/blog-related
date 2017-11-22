@@ -80,12 +80,49 @@ internal class PaginationTest{
         ))
     }
 
+    @Test
+    fun `|1,1,1|1,1,1| all have same key`(){
+        //Page 1
+        val allEntries = listOf(
+                TestPageable("1", 1),
+                TestPageable("2", 1),
+                TestPageable("3", 1)
+        )
+        val page = Pagination.createPage(allEntries, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable("1", 1),
+                        TestPageable("2", 1),
+                        TestPageable("3", 1)
+                ),
+                currentToken = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+        ))
+
+        //Page 2
+        val entriesSinceKey = listOf(
+                TestPageable("1", 1),
+                TestPageable("2", 1),
+                TestPageable("3", 1),
+                TestPageable("4", 1),
+                TestPageable("5", 1),
+                TestPageable("6", 1)
+        )
+        val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+        assertThat(page2).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable("4", 1),
+                        TestPageable("5", 1),
+                        TestPageable("6", 1)
+                ),
+                currentToken = ContinuationToken(timestamp = 1, offset = 6, checksum = checksum("1", "2", "3", "4", "5", "6"))
+        ))
+    }
+
     //TODO |1,3,3|4,5,6|
     //TODO |1,3,3|3,5,6|
     //TODO |1,3,3|3,3,6|
     //TODO |1,2,3|3,3,6|
     //TODO |1,2,3|4,4,6|
-    //TODO |1,1,1|1,1,1|
     //TODO |1,1,1|1,1,2|
 
     @Nested
