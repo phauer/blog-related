@@ -28,7 +28,6 @@ class DesignDAO(dataSource: DataSource){
             imageUrl = rs.getString("imageUrl"),
             dateModified = rs.getTimestamp("dateModified").toInstant()
     )
-
 }
 
 data class DesignPageEntity(

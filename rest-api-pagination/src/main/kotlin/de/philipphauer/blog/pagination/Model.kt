@@ -11,7 +11,7 @@ data class ContinuationToken(
         /** used to detect modifications during pagination */
         val checksum: Long
 ) {
-    override fun toString() = "${timestamp}${DELIMITER}${offset}${DELIMITER}${checksum}"
+    override fun toString() = "$timestamp$DELIMITER$offset$DELIMITER$checksum"
 }
 
 data class QueryAdvice(
