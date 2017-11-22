@@ -4,24 +4,24 @@ import java.util.zip.CRC32
 
 object Pagination{
 
-    fun createPage(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
-        if (currentEntitiesSinceIncludingKey.size < requiredPageSize){
+    fun createPage(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
+        if (currentEntitiesSinceIncludingTs.size < requiredPageSize){
             return Page(
-                    entities = currentEntitiesSinceIncludingKey,
+                    entities = currentEntitiesSinceIncludingTs,
                     currentToken = null
             )
         }
-        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingKey, oldToken)){
+        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs, oldToken)){
             //don't skip
-            val token = createTokenForPage(currentEntitiesSinceIncludingKey)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs)
             return Page(
-                    entities = currentEntitiesSinceIncludingKey,
+                    entities = currentEntitiesSinceIncludingTs,
                     currentToken = token
             )
         } else {
             //TODO mind checksum
-            val entities = skipOffset(currentEntitiesSinceIncludingKey, oldToken)
-            val token = createTokenForPage(currentEntitiesSinceIncludingKey)
+            val entities = skipOffset(currentEntitiesSinceIncludingTs, oldToken)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs)
             return Page(
                     entities = entities,
                     currentToken = token
@@ -29,8 +29,8 @@ object Pagination{
         }
     }
 
-    private fun currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingKey: List<Pageable>, oldToken: ContinuationToken): Boolean {
-        val timestampOfFirstElement = currentEntitiesSinceIncludingKey.first().getKey()
+    private fun currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
+        val timestampOfFirstElement = currentEntitiesSinceIncludingTs.first().getTimestamp()
         return timestampOfFirstElement != oldToken.timestamp
     }
 
@@ -47,16 +47,16 @@ object Pagination{
         )
     }
 
-    private fun skipOffset(allEntitiesSinceIncludingKey: List<Pageable>, currentToken: ContinuationToken) =
-            allEntitiesSinceIncludingKey.subList(currentToken.offset, allEntitiesSinceIncludingKey.size)
+    private fun skipOffset(allEntitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
+            allEntitiesSinceIncludingTs.subList(currentToken.offset, allEntitiesSinceIncludingTs.size)
 
-    internal fun createTokenForPage(currentEntitiesSinceIncludingKey: List<Pageable>): ContinuationToken? {
-        if (currentEntitiesSinceIncludingKey.isEmpty()){
+    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>): ContinuationToken? {
+        if (currentEntitiesSinceIncludingTs.isEmpty()){
             return null
         }
-        val highestEntities = getEntitiesWithHighestKey(currentEntitiesSinceIncludingKey)
-        val highestTimestamp = highestEntities.last().getKey()
-        val ids = highestEntities.map(Pageable::getIdentifier)
+        val highestEntities = getEntitiesWithHighestTimestamp(currentEntitiesSinceIncludingTs)
+        val highestTimestamp = highestEntities.last().getTimestamp()
+        val ids = highestEntities.map(Pageable::getID)
         val checksum = createCRC32Checksum(ids)
         return ContinuationToken(
                 timestamp = highestTimestamp,
@@ -71,16 +71,16 @@ object Pagination{
         return hash.value
     }
 
-    internal fun getEntitiesWithHighestKey(entities: List<Pageable>): List<Pageable> {
+    internal fun getEntitiesWithHighestTimestamp(entities: List<Pageable>): List<Pageable> {
         if (entities.isEmpty()){
             return listOf()
         }
-        val highestTimestamp = entities.last().getKey()
+        val highestTimestamp = entities.last().getTimestamp()
         val entitiesWithHighestTimestamp = mutableListOf<Pageable>()
 
         val lastIndex = entities.size - 1
         var i = lastIndex
-        while (i >= 0 && highestTimestamp == entities[i].getKey()) {
+        while (i >= 0 && highestTimestamp == entities[i].getTimestamp()) {
             entitiesWithHighestTimestamp.add(entities[i])
             i--
         }

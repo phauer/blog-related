@@ -4,7 +4,7 @@ package de.philipphauer.blog.pagination
 data class ContinuationToken(
         /** key/timestamp of the highest entity in the last page. */
         val timestamp: Long,
-        /** offset = amount of entities with the highest key/timestamp in the last page, that have the same key/timestamp */
+        /** offset = amount of entities with the highest timestamp in the last page, that have the same timestamp */
         val offset: Int,
         /** used to detect modifications during pagination */
         val checksum: Long
@@ -24,6 +24,6 @@ data class Page(
 )
 
 interface Pageable {
-    fun getIdentifier(): String
-    fun getKey(): Long
+    fun getID(): String
+    fun getTimestamp(): Long
 }

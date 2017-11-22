@@ -7,17 +7,19 @@ import java.util.zip.CRC32
 
 internal class PaginationTest{
 
+    //TODO set continuation token to null if elements < pageSize. but mind:
     //TODO test, if result test ends right into a page size. in this case, you must return a new token. which results in an empty result set! there is no way, that the server can now if it is null. test and implements
+    //TODO design example shows element 19 on both the before last and the last page.
 
     @Test
     fun `|1,2,3|4,5,6| different keys`(){
         //Page 1
-        val initialPageables = listOf(
+        val initialEntries = listOf(
                 TestPageable(1),
                 TestPageable(2),
                 TestPageable(3)
         )
-        val page = Pagination.createPage(initialPageables, null, 3)
+        val page = Pagination.createPage(initialEntries, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -28,12 +30,12 @@ internal class PaginationTest{
         ))
 
         //Page 2
-        val pageablesSinceKey = listOf(
+        val entriesSinceKey = listOf(
                 TestPageable(4),
                 TestPageable(5),
                 TestPageable(6)
         )
-        val page2 = Pagination.createPage(pageablesSinceKey, page.currentToken, 3)
+        val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(4),
@@ -47,12 +49,12 @@ internal class PaginationTest{
     @Test
     fun `|1,2,3|3,5,6| key 3 overlaps two pages`(){
         //Page 1
-        val initialPageables = listOf(
+        val initialEntries = listOf(
                 TestPageable(1),
                 TestPageable(2),
                 TestPageable(3)
         )
-        val page = Pagination.createPage(initialPageables, null, 3)
+        val page = Pagination.createPage(initialEntries, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -63,13 +65,13 @@ internal class PaginationTest{
         ))
 
         //Page 2
-        val pageablesSinceKey = listOf(
+        val entriesSinceKey = listOf(
                 TestPageable("3", 3),
                 TestPageable("4", 3),
                 TestPageable("5", 5),
                 TestPageable("6", 6)
         )
-        val page2 = Pagination.createPage(pageablesSinceKey, page.currentToken, 3)
+        val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
                         TestPageable("4", 3),
@@ -124,6 +126,8 @@ internal class PaginationTest{
     //TODO |1,2,3|3,3,6|
     //TODO |1,2,3|4,4,6|
     //TODO |1,1,1|1,1,2|
+    //TODO |1,2,3|4,5|
+    //TODO |1,2,3|4,5,6||
 
     @Nested
     inner class `createPage` {
@@ -230,7 +234,7 @@ internal class PaginationTest{
                     TestPageable(2),
                     TestPageable(3)
             )
-            val entities = Pagination.getEntitiesWithHighestKey(pageables)
+            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable(3))
         }
         @Test
@@ -241,7 +245,7 @@ internal class PaginationTest{
                     TestPageable("4",3),
                     TestPageable("5",3)
                     )
-            val entities = Pagination.getEntitiesWithHighestKey(pageables)
+            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("4",3), TestPageable("5",3))
         }
         @Test
@@ -251,18 +255,18 @@ internal class PaginationTest{
                     TestPageable("2",1),
                     TestPageable("3",1)
             )
-            val entities = Pagination.getEntitiesWithHighestKey(pageables)
+            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1",1), TestPageable("2",1), TestPageable("3",1))
         }
         @Test
         fun `empty list`(){
-            val entities = Pagination.getEntitiesWithHighestKey(listOf())
+            val entities = Pagination.getEntitiesWithHighestTimestamp(listOf())
             assertThat(entities).isEmpty()
         }
         @Test
         fun `only one element`(){
             val pageables = listOf(TestPageable(1))
-            val entities = Pagination.getEntitiesWithHighestKey(pageables)
+            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1",1))
         }
     }
@@ -275,10 +279,10 @@ private fun checksum(vararg ids: String): Long{
 }
 
 data class TestPageable(
-        val id: String,
-        val timestamp: Long
+        private val id: String,
+        private val timestamp: Long
 ): Pageable {
     constructor(timestamp: Long): this(timestamp.toString(), timestamp)
-    override fun getIdentifier() = id
-    override fun getKey() = timestamp
+    override fun getID() = id
+    override fun getTimestamp() = timestamp
 }
