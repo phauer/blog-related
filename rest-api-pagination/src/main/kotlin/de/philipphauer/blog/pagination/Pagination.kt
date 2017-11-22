@@ -65,7 +65,7 @@ object Pagination{
         )
     }
 
-    internal fun createCRC32Checksum(ids: List<String>): Long {
+    fun createCRC32Checksum(ids: List<String>): Long {
         val hash = CRC32()
         hash.update(ids.joinToString("_").toByteArray())
         return hash.value
