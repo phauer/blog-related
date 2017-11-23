@@ -7,18 +7,19 @@ import java.util.zip.CRC32
 
 internal class PaginationTest{
 
-    //TODO entriesSinceKey should include last element of last page.
-    //TODO rework test structure: define all entities up front. make test easier to read and understand.
-
     @Test
     fun `|1,2,3|4,5,6| different keys`(){
-        //Page 1
-        val initialEntries = listOf(
+        val allEntries = listOf(
                 TestPageable(1),
                 TestPageable(2),
-                TestPageable(3)
+                TestPageable(3),
+                TestPageable(4),
+                TestPageable(5),
+                TestPageable(6)
         )
-        val page = Pagination.createPage(initialEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -28,12 +29,7 @@ internal class PaginationTest{
                 currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
         ))
 
-        //Page 2
-        val entriesSinceKey = listOf(
-                TestPageable(4),
-                TestPageable(5),
-                TestPageable(6)
-        )
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=3, limit=4)
         val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
@@ -45,31 +41,32 @@ internal class PaginationTest{
         ))
     }
 
+    private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
+            = this.filter { it.getTimestamp() >= timestamp }.take(limit)
+
     @Test
     fun `|1,2,3|3,5,6| key 3 overlaps two pages`(){
-        //Page 1
-        val initialEntries = listOf(
-                TestPageable(1),
-                TestPageable(2),
-                TestPageable(3)
-        )
-        val page = Pagination.createPage(initialEntries, null, 3)
-        assertThat(page).isEqualTo(Page(
-                entities = listOf(
-                        TestPageable(1),
-                        TestPageable(2),
-                        TestPageable(3)
-                ),
-                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
-        ))
-
-        //Page 2
-        val entriesSinceKey = listOf(
+        val allEntries = listOf(
+                TestPageable("1", 1),
+                TestPageable("2", 2),
                 TestPageable("3", 3),
                 TestPageable("4", 3),
                 TestPageable("5", 5),
                 TestPageable("6", 6)
         )
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable("1", 1),
+                        TestPageable("2", 2),
+                        TestPageable("3", 3)
+                ),
+                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+        ))
+
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=3, limit=4)
         val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
@@ -83,13 +80,16 @@ internal class PaginationTest{
 
     @Test
     fun `|1,1,1|1,1,1| all have same key`(){
-        //Page 1
         val allEntries = listOf(
                 TestPageable("1", 1),
                 TestPageable("2", 1),
-                TestPageable("3", 1)
+                TestPageable("3", 1),
+                TestPageable("4", 1),
+                TestPageable("5", 1),
+                TestPageable("6", 1)
         )
-        val page = Pagination.createPage(allEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable("1", 1),
@@ -99,15 +99,7 @@ internal class PaginationTest{
                 currentToken = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
         ))
 
-        //Page 2
-        val entriesSinceKey = listOf(
-                TestPageable("1", 1),
-                TestPageable("2", 1),
-                TestPageable("3", 1),
-                TestPageable("4", 1),
-                TestPageable("5", 1),
-                TestPageable("6", 1)
-        )
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=1, limit=6)
         val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
@@ -121,13 +113,14 @@ internal class PaginationTest{
 
     @Test
     fun `|1,2,3|| although it's the last page it fits right into the page size so we can't tell if this is the last page and have to pass a next token`(){
-        //Page 1
         val allEntries = listOf(
                 TestPageable(1),
-                TestPageable(2),
+                TestPageable( 2),
                 TestPageable(3)
         )
-        val page = Pagination.createPage(allEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -137,8 +130,8 @@ internal class PaginationTest{
                 currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
         ))
 
-        //Page 2
-        val page2 = Pagination.createPage(listOf(), page.currentToken, 3)
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=3, limit=3)
+        val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(),
                 currentToken = null
@@ -149,9 +142,11 @@ internal class PaginationTest{
     fun `|1,2| no next token if there are less elements than page size`(){
         val allEntries = listOf(
                 TestPageable(1),
-                TestPageable(2)
+                TestPageable( 2)
         )
-        val page = Pagination.createPage(allEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -163,13 +158,15 @@ internal class PaginationTest{
 
     @Test
     fun `|1,2,3|4| still skip correctly even if there are less elements than page size`(){
-        // Page 1
         val allEntries = listOf(
                 TestPageable(1),
-                TestPageable(2),
-                TestPageable(3)
+                TestPageable( 2),
+                TestPageable( 3),
+                TestPageable( 4)
         )
-        val page = Pagination.createPage(allEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -179,11 +176,7 @@ internal class PaginationTest{
                 currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
         ))
 
-        // Page 2
-        val entriesSinceKey = listOf(
-                TestPageable(3),
-                TestPageable(4)
-        )
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=3, limit=3)
         val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
@@ -195,13 +188,16 @@ internal class PaginationTest{
 
     @Test
     fun `|1,2,3|4,5|`(){
-        // Page 1
         val allEntries = listOf(
                 TestPageable(1),
-                TestPageable(2),
-                TestPageable(3)
+                TestPageable( 2),
+                TestPageable( 3),
+                TestPageable( 4),
+                TestPageable( 5)
         )
-        val page = Pagination.createPage(allEntries, null, 3)
+        val firstPage = allEntries.getEntriesSinceIncluding(timestamp=0, limit=3)
+
+        val page = Pagination.createPage(firstPage, null, 3)
         assertThat(page).isEqualTo(Page(
                 entities = listOf(
                         TestPageable(1),
@@ -212,11 +208,7 @@ internal class PaginationTest{
         ))
 
         // Page 2
-        val entriesSinceKey = listOf(
-                TestPageable(3),
-                TestPageable(4),
-                TestPageable(5)
-        )
+        val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp=3, limit=3)
         val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
         assertThat(page2).isEqualTo(Page(
                 entities = listOf(
