@@ -4,30 +4,31 @@ import java.util.zip.CRC32
 
 object Pagination{
 
+    //TODO implement checksum
+
     fun createPage(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
-        if (currentEntitiesSinceIncludingTs.size < requiredPageSize){
-            return Page(
-                    entities = currentEntitiesSinceIncludingTs,
-                    currentToken = null
-            )
+        if (currentEntitiesSinceIncludingTs.isEmpty()){
+            return Page(entities = listOf(), currentToken = null)
         }
         if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs, oldToken)){
             //don't skip
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs, requiredPageSize)
             return Page(
                     entities = currentEntitiesSinceIncludingTs,
                     currentToken = token
             )
         } else {
-            //TODO mind checksum
             val entities = skipOffset(currentEntitiesSinceIncludingTs, oldToken)
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs, requiredPageSize)
             return Page(
                     entities = entities,
                     currentToken = token
             )
         }
     }
+
+    private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
+            entities.size >= requiredPageSize
 
     private fun currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
         val timestampOfFirstElement = currentEntitiesSinceIncludingTs.first().getTimestamp()
@@ -50,9 +51,12 @@ object Pagination{
     private fun skipOffset(allEntitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
             allEntitiesSinceIncludingTs.subList(currentToken.offset, allEntitiesSinceIncludingTs.size)
 
-    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>): ContinuationToken? {
+    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>, requiredPageSize: Int): ContinuationToken? {
         if (currentEntitiesSinceIncludingTs.isEmpty()){
             return null
+        }
+        if (!fillUpWholePage(currentEntitiesSinceIncludingTs, requiredPageSize)){
+            return null // no next token required
         }
         val highestEntities = getEntitiesWithHighestTimestamp(currentEntitiesSinceIncludingTs)
         val highestTimestamp = highestEntities.last().getTimestamp()
