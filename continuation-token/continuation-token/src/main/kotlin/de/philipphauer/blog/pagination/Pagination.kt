@@ -6,22 +6,22 @@ object Pagination{
 
     //TODO implement checksum
 
-    fun createPage(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
-        if (currentEntitiesSinceIncludingTs.isEmpty()){
+    fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
+        if (entitiesSinceIncludingTs.isEmpty()){
             return Page(entities = listOf(), currentToken = null)
         }
-        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs, oldToken)){
+        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(entitiesSinceIncludingTs, oldToken)){
             //don't skip
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs, currentEntitiesSinceIncludingTs, requiredPageSize)
+            val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
             return Page(
-                    entities = currentEntitiesSinceIncludingTs,
+                    entities = entitiesSinceIncludingTs,
                     currentToken = token
             )
         } else {
-            val entities = skipOffset(currentEntitiesSinceIncludingTs, oldToken)
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs, entities, requiredPageSize)
+            val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, oldToken)
+            val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
             return Page(
-                    entities = entities,
+                    entities = entitiesForNextPage,
                     currentToken = token
             )
         }
@@ -30,8 +30,8 @@ object Pagination{
     private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
             entities.size >= requiredPageSize
 
-    private fun currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
-        val timestampOfFirstElement = currentEntitiesSinceIncludingTs.first().getTimestamp()
+    private fun currentPageStartsWithANewTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
+        val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
         return timestampOfFirstElement != oldToken.timestamp
     }
 
@@ -48,19 +48,22 @@ object Pagination{
         )
     }
 
-    private fun skipOffset(allEntitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
-            allEntitiesSinceIncludingTs.subList(currentToken.offset, allEntitiesSinceIncludingTs.size)
+    private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
+            entitiesSinceIncludingTs.subList(currentToken.offset, entitiesSinceIncludingTs.size)
 
-    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>,
-                                    entities: List<Pageable>, //includes skip
+    /**
+     * @param entitiesForNextPage includes skip/offset
+     */
+    internal fun createTokenForPage(allEntitiesSinceIncludingTs: List<Pageable>,
+                                    entitiesForNextPage: List<Pageable>,
                                     requiredPageSize: Int): ContinuationToken? {
-        if (currentEntitiesSinceIncludingTs.isEmpty()){
+        if (allEntitiesSinceIncludingTs.isEmpty()){
             return null
         }
-        if (!fillUpWholePage(entities, requiredPageSize)){
+        if (!fillUpWholePage(entitiesForNextPage, requiredPageSize)){
             return null // no next token required
         }
-        val highestEntities = getEntitiesWithHighestTimestamp(currentEntitiesSinceIncludingTs)
+        val highestEntities = getEntitiesWithHighestTimestamp(allEntitiesSinceIncludingTs)
         val highestTimestamp = highestEntities.last().getTimestamp()
         val ids = highestEntities.map(Pageable::getID)
         val checksum = createCRC32Checksum(ids)
@@ -71,7 +74,7 @@ object Pagination{
         )
     }
 
-    fun createCRC32Checksum(ids: List<String>): Long {
+    private fun createCRC32Checksum(ids: List<String>): Long {
         val hash = CRC32()
         hash.update(ids.joinToString("_").toByteArray())
         return hash.value
