@@ -7,10 +7,6 @@ import java.util.zip.CRC32
 
 internal class PaginationTest{
 
-    //TODO set continuation token to null if elements < pageSize. but mind:
-    //TODO test, if result test ends right into a page size. in this case, you must return a new token. which results in an empty result set! there is no way, that the server can now if it is null. test and implements
-    //TODO design example shows element 19 on both the before last and the last page.
-
     @Test
     fun `|1,2,3|4,5,6| different keys`(){
         //Page 1
@@ -120,6 +116,49 @@ internal class PaginationTest{
         ))
     }
 
+    @Test
+    fun `|1,2,3|| although it's the last page it fits right into the page size so we can't tell if this is the last page and have to pass a next token`(){
+        //Page 1
+        val allEntries = listOf(
+                TestPageable(1),
+                TestPageable(2),
+                TestPageable(3)
+        )
+        val page = Pagination.createPage(allEntries, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(1),
+                        TestPageable(2),
+                        TestPageable(3)
+                ),
+                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+        ))
+
+        //Page 2
+        val page2 = Pagination.createPage(listOf(), page.currentToken, 3)
+        assertThat(page2).isEqualTo(Page(
+                entities = listOf(),
+                currentToken = null
+        ))
+    }
+
+    @Test
+    fun `|1,2| no next token if there are less elements than page size`(){
+        val allEntries = listOf(
+                TestPageable(1),
+                TestPageable(2)
+        )
+        val page = Pagination.createPage(allEntries, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(1),
+                        TestPageable(2)
+                ),
+                currentToken = null
+        ))
+    }
+
+    //TODO in design example: design 18 shows up twice!
     //TODO |1,3,3|4,5,6|
     //TODO |1,3,3|3,5,6|
     //TODO |1,3,3|3,3,6|
