@@ -3,8 +3,10 @@ package de.philipphauer.blog.pagination
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.util.zip.CRC32
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class PaginationTest{
 
     @Nested
