@@ -4,48 +4,36 @@ import java.util.zip.CRC32
 
 object Pagination{
 
-    //TODO implement checksum
+    //TODO implement checksum fallback
 
     fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
         if (entitiesSinceIncludingTs.isEmpty()){
             return Page(entities = listOf(), currentToken = null)
         }
-        if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(entitiesSinceIncludingTs, oldToken)){
+        if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)){
             //don't skip
             val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
-            return Page(
-                    entities = entitiesSinceIncludingTs,
-                    currentToken = token
-            )
+            return Page(entities = entitiesSinceIncludingTs, currentToken = token)
         } else {
             val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, oldToken)
             val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
-            return Page(
-                    entities = entitiesForNextPage,
-                    currentToken = token
-            )
+            return Page(entities = entitiesForNextPage, currentToken = token)
         }
     }
 
     private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
             entities.size >= requiredPageSize
 
-    private fun currentPageStartsWithANewTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
+    private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
         val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
         return timestampOfFirstElement != oldToken.timestamp
     }
 
     fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
         if (token == null){
-            return QueryAdvice(
-                    limit = pageSize,
-                    timestamp = 0
-            )
+            return QueryAdvice(limit = pageSize, timestamp = 0)
         }
-        return QueryAdvice(
-                limit = token.offset + pageSize,
-                timestamp = token.timestamp
-        )
+        return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
     }
 
     private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
