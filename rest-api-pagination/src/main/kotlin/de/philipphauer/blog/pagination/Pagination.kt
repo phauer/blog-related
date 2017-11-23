@@ -12,14 +12,14 @@ object Pagination{
         }
         if (oldToken == null || currentPageStartsWithANewTimestampThanInToken(currentEntitiesSinceIncludingTs, oldToken)){
             //don't skip
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs, requiredPageSize)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs, currentEntitiesSinceIncludingTs, requiredPageSize)
             return Page(
                     entities = currentEntitiesSinceIncludingTs,
                     currentToken = token
             )
         } else {
             val entities = skipOffset(currentEntitiesSinceIncludingTs, oldToken)
-            val token = createTokenForPage(currentEntitiesSinceIncludingTs, requiredPageSize)
+            val token = createTokenForPage(currentEntitiesSinceIncludingTs, entities, requiredPageSize)
             return Page(
                     entities = entities,
                     currentToken = token
@@ -51,11 +51,13 @@ object Pagination{
     private fun skipOffset(allEntitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
             allEntitiesSinceIncludingTs.subList(currentToken.offset, allEntitiesSinceIncludingTs.size)
 
-    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>, requiredPageSize: Int): ContinuationToken? {
+    internal fun createTokenForPage(currentEntitiesSinceIncludingTs: List<Pageable>,
+                                    entities: List<Pageable>, //includes skip
+                                    requiredPageSize: Int): ContinuationToken? {
         if (currentEntitiesSinceIncludingTs.isEmpty()){
             return null
         }
-        if (!fillUpWholePage(currentEntitiesSinceIncludingTs, requiredPageSize)){
+        if (!fillUpWholePage(entities, requiredPageSize)){
             return null // no next token required
         }
         val highestEntities = getEntitiesWithHighestTimestamp(currentEntitiesSinceIncludingTs)

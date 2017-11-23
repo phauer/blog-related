@@ -8,7 +8,7 @@ import java.util.zip.CRC32
 internal class PaginationTest{
 
     //TODO entriesSinceKey should include last element of last page.
-    //TODO design example: last page still shows next token
+    //TODO rework test structure: define all entities up front. make test easier to read and understand.
 
     @Test
     fun `|1,2,3|4,5,6| different keys`(){
@@ -195,7 +195,36 @@ internal class PaginationTest{
 
     @Test
     fun `|1,2,3|4,5|`(){
+        // Page 1
+        val allEntries = listOf(
+                TestPageable(1),
+                TestPageable(2),
+                TestPageable(3)
+        )
+        val page = Pagination.createPage(allEntries, null, 3)
+        assertThat(page).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(1),
+                        TestPageable(2),
+                        TestPageable(3)
+                ),
+                currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+        ))
 
+        // Page 2
+        val entriesSinceKey = listOf(
+                TestPageable(3),
+                TestPageable(4),
+                TestPageable(5)
+        )
+        val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+        assertThat(page2).isEqualTo(Page(
+                entities = listOf(
+                        TestPageable(4),
+                        TestPageable(5)
+                ),
+                currentToken = null
+        ))
     }
 
     //TODO |1,3,3|4,5,6|
@@ -243,7 +272,7 @@ internal class PaginationTest{
                     TestPageable(3),
                     TestPageable(4)
             )
-            val token = Pagination.createTokenForPage(pageables, 4)
+            val token = Pagination.createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")))
         }
         @Test
@@ -254,7 +283,7 @@ internal class PaginationTest{
                     TestPageable("3", 3),
                     TestPageable("4", 3)
             )
-            val token = Pagination.createTokenForPage(pageables, 4)
+            val token = Pagination.createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
         @Test
@@ -264,7 +293,7 @@ internal class PaginationTest{
                     TestPageable("2",1),
                     TestPageable("3",1)
             )
-            val token = Pagination.createTokenForPage(pageables, 3)
+            val token = Pagination.createTokenForPage(pageables, pageables, 3)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")))
         }
         @Test
@@ -272,12 +301,12 @@ internal class PaginationTest{
             val pageables = listOf(
                     TestPageable(1)
             )
-            val token = Pagination.createTokenForPage(pageables, 1)
+            val token = Pagination.createTokenForPage(pageables, pageables, 1)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 1, checksum = checksum("1")))
         }
         @Test
         fun `empty list`() {
-            val token = Pagination.createTokenForPage(listOf(), 10)
+            val token = Pagination.createTokenForPage(listOf(), listOf(), 10)
             assertThat(token).isNull()
         }
         //TODO test varying pagesize!
