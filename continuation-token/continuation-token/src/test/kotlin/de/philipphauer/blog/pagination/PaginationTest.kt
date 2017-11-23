@@ -186,7 +186,7 @@ internal class PaginationTest{
         }
 
         @Test
-        fun `|1,2,3|4,5|`() {
+        fun `|1,2,3|4,5| second page is not full so no next token`() {
             val allEntries = listOf(
                     TestPageable(1),
                     TestPageable(2),
@@ -206,7 +206,6 @@ internal class PaginationTest{
                     currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
-            // Page 2
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
             val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
@@ -227,12 +226,209 @@ internal class PaginationTest{
             ))
         }
 
-        //TODO |1,3,3|4,5,6|
-        //TODO |1,3,3|3,5,6|
-        //TODO |1,3,3|3,3,6|
-        //TODO |1,2,3|3,3,6|
-        //TODO |1,2,3|4,4,6|
-        //TODO |1,1,1|1,1,2|
+        @Test
+        fun `|1,3,3|4,5,6|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 3),
+                    TestPageable("3", 3),
+                    TestPageable("4", 4),
+                    TestPageable("5", 5),
+                    TestPageable("6", 6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 3),
+                            TestPageable("3", 3)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 4),
+                            TestPageable("5", 5),
+                            TestPageable("6", 6)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+        }
+
+        @Test
+        fun `|1,3,3|3,5,6|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 3),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3),
+                    TestPageable("5", 5),
+                    TestPageable("6", 6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 3),
+                            TestPageable("3", 3)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 3),
+                            TestPageable("5", 5),
+                            TestPageable("6", 6)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+        }
+
+        @Test
+        fun `|1,3,3|3,3,6|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 3),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3),
+                    TestPageable("5", 3),
+                    TestPageable("6", 6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 3),
+                            TestPageable("3", 3)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 3),
+                            TestPageable("5", 3),
+                            TestPageable("6", 6)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+        }
+
+        @Test
+        fun `|1,2,3|3,3,6|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3),
+                    TestPageable("5", 3),
+                    TestPageable("6", 6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 2),
+                            TestPageable("3", 3)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 3),
+                            TestPageable("5", 3),
+                            TestPageable("6", 6)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+        }
+
+        @Test
+        fun `|1,2,3|4,4,6|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 4),
+                    TestPageable("5", 4),
+                    TestPageable("6", 6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 2),
+                            TestPageable("3", 3)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 4),
+                            TestPageable("5", 4),
+                            TestPageable("6", 6)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+        }
+
+        @Test
+        fun `|1,1,1|1,1,2|`() {
+            val allEntries = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 1),
+                    TestPageable("3", 1),
+                    TestPageable("4", 1),
+                    TestPageable("5", 1),
+                    TestPageable("6", 2)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = Pagination.createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 1),
+                            TestPageable("3", 1)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+            ))
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
+            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 1),
+                            TestPageable("5", 1),
+                            TestPageable("6", 2)
+                    ),
+                    currentToken = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6"))
+            ))
+        }
 
         private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
                 = this.filter { it.getTimestamp() >= timestamp }.take(limit)
