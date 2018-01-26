@@ -1,4 +1,4 @@
-# Kotlin Demo
+# Example Implementation for the `Timestamp_ID` Continuation Token
 
 ```bash
 ./mvnw package && java -jar target/demo-kotlin*.jar
