@@ -19,17 +19,19 @@ class DesignDAO(dataSource: DataSource) {
             ORDER BY dateModified asc, id asc
             LIMIT $pageSize;"""
         val designs = template.query(sql, this::mapToDesign)
-        return createPage(designs, null, pageSize)
+        return createPage(entities = designs, previousToken = null, pageSize = pageSize)
     }
 
     fun getNextDesignPage(token: ContinuationToken, pageSize: Int): Page<DesignEntity> {
         val sql = """SELECT * FROM designs
-            WHERE dateModified > FROM_UNIXTIME(${token.timestamp})
-            OR (dateModified = FROM_UNIXTIME(${token.timestamp}) AND id > ${token.id})
+            WHERE (
+              dateModified > FROM_UNIXTIME(${token.timestamp})
+              OR (dateModified = FROM_UNIXTIME(${token.timestamp}) AND id > ${token.id})
+            )
             ORDER BY dateModified asc, id asc
             LIMIT $pageSize;"""
         val designs = template.query(sql, this::mapToDesign)
-        return createPage(designs, token, pageSize)
+        return createPage(entities = designs, previousToken = token, pageSize = pageSize)
     }
 
     private fun mapToDesign(rs: ResultSet, rowNum: Int) = DesignEntity(
