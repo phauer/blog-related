@@ -125,7 +125,7 @@ internal class DesignResourceTest {
         whenever(serverClock.instant()).doReturn(sameSecond) //to override the server's "now()".
         client.retrieveNextPageAndRememberResult()
         util.update(id = "2", now = sameSecond) //this must not be missed in the next request
-        //simulate a passed  (no Thread.sleep() in test required). in reality, this would be a new pagination run
+        //simulate a passed second (no Thread.sleep() in test required). in reality, this would be a new pagination run
         whenever(serverClock.instant()).doReturn(sameSecond.plusSeconds(1))
         client.retrieveNextPageAndRememberResult()
 
