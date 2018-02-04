@@ -101,7 +101,7 @@ internal class DesignResourceTest {
     solution: add condition `AND timestamp > now()` to the where clause.
      */
     @Test
-    fun `dont miss element when timestamp is now`() {
+    fun `dont miss elements when updates are happening before the last page`() {
         val serverClock = mock<Clock>()
         val resource = createDesignResource(serverClock)
         val designData = listOf<Pair<String, Long>>(
