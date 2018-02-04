@@ -1,6 +1,6 @@
 package de.philipphauer.blog.pagination
 
-import de.philipphauer.blog.pagination.util.DesignCreator
+import de.philipphauer.blog.pagination.util.DesignDatabaseUtil
 import de.philipphauer.blog.pagination.util.FunctionsMySQL
 import org.eclipse.jetty.server.NCSARequestLog
 import org.eclipse.jetty.server.Server
@@ -12,6 +12,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.datasource.init.ScriptUtils
+import java.time.Clock
 import java.time.Instant
 
 fun main(args: Array<String>) {
@@ -39,9 +40,9 @@ private fun bootstrapDesignResource(): DesignResource {
     FunctionsMySQL.register(dataSource.connection)
     ScriptUtils.executeSqlScript(dataSource.connection, ClassPathResource("create-designs-table.sql"))
 
-    DesignCreator(dataSource).createDesigns(amount = 7, startDate = Instant.ofEpochSecond(1512757070))
+    DesignDatabaseUtil(dataSource).createDesigns(amount = 7, startDate = Instant.ofEpochSecond(1512757070))
 
-    val dao = DesignDAO(dataSource)
+    val dao = DesignDAO(dataSource, Clock.systemUTC())
     return DesignResource(dao)
 }
 

@@ -4,18 +4,13 @@ import org.springframework.jdbc.core.JdbcTemplate
 import java.time.Instant
 import javax.sql.DataSource
 
-class DesignCreator(dataSource: DataSource) {
+class DesignDatabaseUtil(dataSource: DataSource) {
 
     private val utilTemplate = JdbcTemplate(dataSource)
 
     fun createDesigns(amount: Int, startDate: Instant = Instant.now()) {
         val values = (1..amount).mapIndexed { i, _ ->
-            arrayOf(
-                i,
-                "Cat $i",
-                "http://domain.de/cat$i.jpg",
-                startDate.plusSeconds(i.toLong()).epochSecond
-            )
+            arrayOf(i, "Cat $i", "http://domain.de/cat$i.jpg", startDate.plusSeconds(i.toLong()).epochSecond)
         }
         utilTemplate.batchUpdate(
             "INSERT INTO designs (id, title, imageUrl, dateModified) VALUES (?, ?, ?, FROM_UNIXTIME(?))",
@@ -25,12 +20,7 @@ class DesignCreator(dataSource: DataSource) {
 
     fun insertDesigns(designData: List<Pair<String, Long>>) {
         val values = designData.map { (id, timestamp) ->
-            arrayOf(
-                id,
-                "Cat $id",
-                "http://domain.de/cat$id.jpg",
-                timestamp
-            )
+            arrayOf(id, "Cat $id", "http://domain.de/cat$id.jpg", timestamp)
         }
         utilTemplate.batchUpdate(
             "INSERT INTO designs (id, title, imageUrl, dateModified) VALUES (?, ?, ?, FROM_UNIXTIME(?))",
@@ -40,5 +30,13 @@ class DesignCreator(dataSource: DataSource) {
 
     fun removeAllDesigns() {
         utilTemplate.execute("TRUNCATE TABLE designs;")
+    }
+
+    fun update(id: String, now: Instant) {
+        val newTitle = "Cat $id (UPDATED)"
+        utilTemplate.update("""UPDATE designs
+            SET dateModified = FROM_UNIXTIME(?),
+            title = ?
+            WHERE id = ?;""", now.epochSecond, newTitle, id)
     }
 }
