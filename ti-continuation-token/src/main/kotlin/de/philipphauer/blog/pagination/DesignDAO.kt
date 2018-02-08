@@ -12,6 +12,8 @@ import javax.sql.DataSource
 
 class DesignDAO(
     dataSource: DataSource,
+    /** using the timestamp of the application (instead of the database) is only appropriate
+     *  if the application also exclusively sets and updates the timestamp */
     private val clock: Clock
 ) {
 

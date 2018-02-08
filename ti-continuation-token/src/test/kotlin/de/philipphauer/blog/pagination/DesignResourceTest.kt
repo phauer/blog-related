@@ -94,9 +94,9 @@ internal class DesignResourceTest {
 
     /**
      * we miss an element when the following three things are happening within a single second (and given that this is the current second):
-    a) element a's timestamp is set to now,
-    b) the last page with element a is returned (token `a_now`) and
-    c) element b's timestamp is also set to now.
+    a) element 3's timestamp is set to now (99),
+    b) the last page with element 3 is returned (token `3_99`) and
+    c) element 2's timestamp is also set to now (99).
     (given a timestamp column with second precision. with ms precision, this three things have to happen within one ms)
     solution: add condition `AND timestamp > now()` to the where clause.
      */
@@ -105,22 +105,14 @@ internal class DesignResourceTest {
         val serverClock = mock<Clock>()
         val resource = createDesignResource(serverClock)
         val designData = listOf<Pair<String, Long>>(
-            "1" to 1512757010
-            , "2" to 1512757020
-            , "3" to 1512757030
+            "1" to 10
+            , "2" to 20
+            , "3" to 30
         )
         util.insertDesigns(designData)
         val client = PaginationClient(resource = resource, pageSize = 3)
 
-        //1 10; 2 20; 3 30
-        //now, within the same second/second-based timestamp (usually "now"):
-        //update element 3's timestamp to now
-        //getNextPageAndRememberResult
-        //update element 2's timestamp to now
-        //finally, look at all delivered designs (call getNextPageAndRememberResult() later again). we should have seen 1 and 3 one time and (more important) 2 two times. we should not have missed the update of design 2!
-        val sameSecond = Instant.ofEpochSecond(1512757099)
-        println("sameSecond: ${sameSecond.epochSecond}")
-
+        val sameSecond = Instant.ofEpochSecond(99)
         util.update(id = "3", now = sameSecond)
         whenever(serverClock.instant()).doReturn(sameSecond) //to override the server's "now()".
         client.retrieveNextPageAndRememberResult()
@@ -131,15 +123,57 @@ internal class DesignResourceTest {
 
         val allDesigns = client.getAllRetrievedDesigns()
         assertThat(allDesigns).containsOnly(
-            DesignDTO(id = "1", title = "Cat 1", imageUrl = "http://domain.de/cat1.jpg", dateModified = 1512757010)
-            , DesignDTO(id = "2", title = "Cat 2", imageUrl = "http://domain.de/cat2.jpg", dateModified = 1512757020)
+            DesignDTO(id = "1", title = "Cat 1", imageUrl = "http://domain.de/cat1.jpg", dateModified = 10)
+            , DesignDTO(id = "2", title = "Cat 2", imageUrl = "http://domain.de/cat2.jpg", dateModified = 20)
             , DesignDTO(id = "3", title = "Cat 3 (UPDATED)", imageUrl = "http://domain.de/cat3.jpg", dateModified = sameSecond.epochSecond)
             //this must not be missed:
             , DesignDTO(id = "2", title = "Cat 2 (UPDATED)", imageUrl = "http://domain.de/cat2.jpg", dateModified = sameSecond.epochSecond)
         )
     }
 
-    //TODO also test time < now() clause for followUpRequests (i.e. request with a continuation token)
+    @Test
+    fun `dont return elements with current timestamp - request with touched since`() {
+        val serverClock = mock<Clock>()
+        val resource = createDesignResource(serverClock)
+        val sameSecond = Instant.ofEpochSecond(99)
+        val designData = listOf<Pair<String, Long>>(
+            "1" to 10
+            , "2" to 20
+            , "3" to sameSecond.epochSecond
+        )
+        util.insertDesigns(designData)
+
+        whenever(serverClock.instant()).doReturn(sameSecond)
+        val response = resource.getDesigns(Request(Method.GET, "/designs?pageSize=3&touchedSince=0")).toPageDTO()
+
+        assertThat(response.continuationToken).isEqualTo("20_2")
+        assertThat(response.designs).containsOnly(
+            DesignDTO(id = "1", title = "Cat 1", imageUrl = "http://domain.de/cat1.jpg", dateModified = 10)
+            , DesignDTO(id = "2", title = "Cat 2", imageUrl = "http://domain.de/cat2.jpg", dateModified = 20)
+        )
+    }
+
+    @Test
+    fun `dont return elements with current timestamp - request with token`() {
+        val serverClock = mock<Clock>()
+        val resource = createDesignResource(serverClock)
+        val sameSecond = Instant.ofEpochSecond(99)
+        val designData = listOf<Pair<String, Long>>(
+            "1" to 10
+            , "2" to 20
+            , "3" to sameSecond.epochSecond
+        )
+        util.insertDesigns(designData)
+
+        whenever(serverClock.instant()).doReturn(sameSecond)
+        val response = resource.getDesigns(Request(Method.GET, "/designs?pageSize=3&continuationToken=1_10")).toPageDTO()
+
+        assertThat(response.continuationToken).isEqualTo("20_2")
+        assertThat(response.designs).containsOnly(
+            DesignDTO(id = "1", title = "Cat 1", imageUrl = "http://domain.de/cat1.jpg", dateModified = 10)
+            , DesignDTO(id = "2", title = "Cat 2", imageUrl = "http://domain.de/cat2.jpg", dateModified = 20)
+        )
+    }
 
     @BeforeEach
     fun cleanup() {
