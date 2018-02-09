@@ -20,10 +20,9 @@ class DesignDAO(
     private val template = JdbcTemplate(dataSource)
 
     fun getDesignsSince(modifiedSince: Instant, pageSize: Int): Page<DesignEntity> {
-        val now = clock.instant().epochSecond
         val sql = """SELECT * FROM designs
             WHERE dateModified >= FROM_UNIXTIME(${modifiedSince.epochSecond})
-            AND dateModified < FROM_UNIXTIME($now)
+            AND dateModified < FROM_UNIXTIME(${clock.instant().epochSecond})
             ORDER BY dateModified asc, id asc
             LIMIT $pageSize;"""
         val designs = template.query(sql, this::mapToDesign)
@@ -31,13 +30,12 @@ class DesignDAO(
     }
 
     fun getNextDesignPage(token: ContinuationToken, pageSize: Int): Page<DesignEntity> {
-        val now = clock.instant().epochSecond
         val sql = """SELECT * FROM designs
             WHERE (
               dateModified > FROM_UNIXTIME(${token.timestamp})
               OR (dateModified = FROM_UNIXTIME(${token.timestamp}) AND id > ${token.id})
             )
-            AND dateModified < FROM_UNIXTIME($now)
+            AND dateModified < FROM_UNIXTIME(${clock.instant().epochSecond})
             ORDER BY dateModified asc, id asc
             LIMIT $pageSize;"""
         val designs = template.query(sql, this::mapToDesign)
