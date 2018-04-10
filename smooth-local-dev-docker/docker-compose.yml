@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:3.4.3
+    ports:
+      - "27017:27017"
+    command: --profile=1 --slowms=0
+  mongo_seeding:
+    build: ./local-dev/mongo-seeding
+    depends_on:
+      - mongo
+#  external_service_stub:
+#    build: ./local-dev/tag-service-stub
+#    ports:
+#      - "5000:5000"
+
+#  external_service_mongo:
+#    image: mongo:3.4.3
+#    ports:
+#      - "27018:27017"
+#    command: --profile=1 --slowms=0
+#  external_service_wrapped:
+#    build:
+#      context: local-dev/external-service-wrapped/
+#      args:
+#        SERVICE_VERSION: 2.13.13
+#    ports:
+#      - "2360:2360"
+#    depends_on:
+#      - external_service_mongo

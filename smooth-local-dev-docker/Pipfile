@@ -1,0 +1,19 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+flask = "==0.12.2"
+Faker = "==0.8.10"
+pymongo = "==3.6.1"
+mysql-connector = "==2.1.6"
+
+[dev-packages]
+
+[requires]
+
+python_version = "3.6"
