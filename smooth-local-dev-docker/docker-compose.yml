@@ -9,6 +9,17 @@ services:
     build: ./local-dev/mongo-seeding
     depends_on:
       - mongo
+  mysql:
+    image: mysql:5.6.33
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "database"
+  mysql_seeding:
+    build: ./local-dev/mysql-seeding
+    depends_on:
+      - mysql
 #  external_service_stub:
 #    build: ./local-dev/tag-service-stub
 #    ports:
