@@ -16,15 +16,18 @@ import io.ktor.server.netty.Netty
 
 fun Application.module() {
     val designClient = MongoDesignClient()
-    val mapper = ObjectMapper().registerKotlinModule()
+    val userClient = MySqlUserClient()
 
     install(DefaultHeaders)
     install(CallLogging)
     install(Routing) {
         get("/designs") {
             val designs = designClient.findDesigns()
-            val json = mapper.writeValueAsString(designs)
-            call.respondText(text = json, contentType = ContentType.Application.Json)
+            call.respondText(text = designs.toJson(), contentType = ContentType.Application.Json)
+        }
+        get("/users") {
+            val users = userClient.findUsers()
+            call.respondText(text = users.toJson(), contentType = ContentType.Application.Json)
         }
     }
 }
@@ -37,3 +40,6 @@ fun main(args: Array<String>) {
         , module = Application::module
     ).start(wait = true)
 }
+
+val mapper = ObjectMapper().registerKotlinModule()
+private fun Any.toJson() = mapper.writeValueAsString(this)
