@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.6
 
 import random
-from datetime import datetime, timedelta
 from typing import List
 
 from bson import ObjectId
@@ -42,7 +41,7 @@ def generate_design():
         '_id': ObjectId()
         , 'name': faker.word()
         , 'description': faker.sentence(nb_words=7)
-        , 'date': generate_date()
+        , 'date': faker.date_time()
         , 'tags': choose_max_n_times(possibilities=POSSIBLE_TAGS, max_n=3)
         , 'state': random.choice(POSSIBLE_STATES)
         , 'designer': {
@@ -54,10 +53,6 @@ def generate_design():
     if faker.boolean(chance_of_getting_true=50):
         data['superDesign'] = True
     return data
-
-
-def generate_date():
-    return datetime.now() - timedelta(days=random.randint(1, 14))
 
 
 def script_runs_within_container():
