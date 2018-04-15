@@ -9,14 +9,14 @@ faker = Faker('en')
 
 
 # A: Return a static payload
-@app.route('/users', methods=['GET'])
+@app.route('/users2', methods=['GET'])
 def get_users_static():
     with open('static-user-response.json', 'r') as payload_file:
         return Response(payload_file.read(), mimetype='application/json')
 
 
 # B: Generate the payload with faker
-@app.route('/users2', methods=['GET'])
+@app.route('/users', methods=['GET'])
 def get_users_faker():
     response_users = [generate_user(user_id) for user_id in range(50)]
     payload = {

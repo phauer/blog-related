@@ -17,6 +17,7 @@ import io.ktor.server.netty.Netty
 fun Application.module() {
     val designDao = MongoDesignDAO()
     val userDao = MySqlUserDAO()
+    val userClient = ExternalServiceUserClient()
 
     install(DefaultHeaders)
     install(CallLogging)
@@ -27,6 +28,10 @@ fun Application.module() {
         }
         get("/users") {
             val users = userDao.findUsers()
+            call.respondText(text = users.toJson(), contentType = ContentType.Application.Json)
+        }
+        get("/users_ext") {
+            val users = userClient.findUsers()
             call.respondText(text = users.toJson(), contentType = ContentType.Application.Json)
         }
     }
