@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.ResultSet
 import java.time.Instant
 
-class MySqlUserClient {
+class MySqlUserDAO {
 
     private val dataSource = DataSourceBuilder.create()
         .username("root")

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.time.Instant
 
-class MongoDesignClient {
+class MongoDesignDAO {
 
     private val dbFactory = SimpleMongoDbFactory(MongoClientURI("mongodb://localhost:27017/test"))
     private val template = MongoTemplate(dbFactory)

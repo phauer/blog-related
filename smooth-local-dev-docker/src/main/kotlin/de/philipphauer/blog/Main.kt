@@ -15,18 +15,18 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 fun Application.module() {
-    val designClient = MongoDesignClient()
-    val userClient = MySqlUserClient()
+    val designDao = MongoDesignDAO()
+    val userDao = MySqlUserDAO()
 
     install(DefaultHeaders)
     install(CallLogging)
     install(Routing) {
         get("/designs") {
-            val designs = designClient.findDesigns()
+            val designs = designDao.findDesigns()
             call.respondText(text = designs.toJson(), contentType = ContentType.Application.Json)
         }
         get("/users") {
-            val users = userClient.findUsers()
+            val users = userDao.findUsers()
             call.respondText(text = users.toJson(), contentType = ContentType.Application.Json)
         }
     }
