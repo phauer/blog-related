@@ -1,0 +1,26 @@
+{
+  "size": 50,
+  "users": [
+    {
+      "company": "Powers Inc",
+      "email": "ihouston@garcia.com",
+      "id": 0,
+      "key_account_info": null,
+      "name": "Shannon Moore"
+    },
+    {
+      "company": "Stark-Sullivan",
+      "email": "katie55@wood.com",
+      "id": 1,
+      "key_account_info": null,
+      "name": "Jeffery Sloan"
+    },
+    {
+      "company": "Garza, Gonzalez and Phillips",
+      "email": "wheath@roberts-owens.com",
+      "id": 2,
+      "key_account_info": "This is an important account!",
+      "name": "Nicole Collins"
+    }
+  ]
+}
