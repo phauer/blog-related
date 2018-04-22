@@ -12,28 +12,20 @@ POSSIBLE_TAGS = ['vacation', 'business', 'technology', 'mobility', 'apparel']
 faker = Faker('en')
 
 
-def main():
-    MongoSeeder().seed()
-
-
 class MongoSeeder:
 
     def __init__(self):
         host = 'mongo' if script_runs_within_container() else 'localhost'
-        url = f'mongodb://{host}:27017/test'
-        self.client = MongoClient(url)
-        self.db = self.client.test
+        client = MongoClient(f'mongodb://{host}:27017/test')
+        self.db = client.test
 
     def seed(self):
         print('Clearing collection...')
-        self.db.designs.remove({})  # prevents indexes
+        self.db.designs.remove({})
         print('Inserting new designs...')
-        self.insert_designs()
-        print('Done.')
-
-    def insert_designs(self):
         designs = [generate_design() for _ in range(100)]
         self.db.designs.insert_many(designs)
+        print('Done.')
 
 
 def generate_design():
@@ -68,6 +60,5 @@ def choose_max_n_times(possibilities: List, max_n: int) -> List:
     return chosen
 
 
-if __name__ == '__main__':
-    main()
+MongoSeeder().seed()
 
