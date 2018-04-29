@@ -35,6 +35,6 @@ services:
 #      args:
 #        SERVICE_VERSION: 2.13.13
 #    ports:
-#      - "2360:2360"
+#      - "8080:8080"
 #    depends_on:
 #      - external_service_mongo

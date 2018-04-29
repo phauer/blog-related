@@ -3,4 +3,4 @@ server:
   data:
     mongodb:
       # the host is the service name in the docker-compose.yml.
-      uri: "mongodb://user:password@external_service_mongo:27017/test"
+      uri: "mongodb://user:password@external_service_mongo:27018/test"
