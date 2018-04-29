@@ -14,6 +14,8 @@
         <kotlin.version>1.2.30</kotlin.version>
         <junit.version>4.12</junit.version>
         <ktor.version>0.9.1</ktor.version>
+        <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
     </properties>
 
     <dependencies>

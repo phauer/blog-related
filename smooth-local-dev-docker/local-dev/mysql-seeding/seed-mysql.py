@@ -10,10 +10,6 @@ POSSIBLE_STATES = ['ACTIVE', 'INACTIVE']
 faker = Faker('en')
 
 
-def main():
-    MySqlSeeder().seed()
-
-
 class MySqlSeeder:
 
     def __init__(self):
@@ -81,5 +77,4 @@ def script_runs_within_container():
         return 'docker' in cgroup_file.read()
 
 
-if __name__ == '__main__':
-    main()
+MySqlSeeder().seed()
