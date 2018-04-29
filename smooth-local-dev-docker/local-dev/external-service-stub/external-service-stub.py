@@ -8,14 +8,7 @@ app = Flask(__name__)
 faker = Faker('en')
 
 
-# A: Return a static payload
-@app.route('/users2', methods=['GET'])
-def get_users_static():
-    with open('static-user-response.json', 'r') as payload_file:
-        return Response(payload_file.read(), mimetype='application/json')
-
-
-# B: Generate the payload with faker
+# A: Generate the payload with faker
 @app.route('/users', methods=['GET'])
 def get_users_faker():
     response_users = [generate_user(user_id) for user_id in range(50)]
@@ -37,5 +30,11 @@ def generate_user(user_id):
     }
 
 
-if __name__ == '__main__':
-    app.run(debug=False, port=5000, host='0.0.0.0')
+# B: Return a static payload
+@app.route('/users2', methods=['GET'])
+def get_users_static():
+    with open('static-user-response.json', 'r') as payload_file:
+        return Response(payload_file.read(), mimetype='application/json')
+
+
+app.run(debug=False, port=5000, host='0.0.0.0')
