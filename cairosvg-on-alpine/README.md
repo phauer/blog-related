@@ -1,16 +1,24 @@
 # Alpine Image with CairoSVG
 
-see `src/Dockerfile`.
+```bash
+# build and start the docker container
+docker-compose up
+# trigger the svg convertion
+curl http://localhost:5000/image
+```
+
+For details, check out the `src/Dockerfile`.
 
 # Run the Script on Ubuntu
 
 ```bash
 pipenv install
 pipenv shell
-python src/svg-converter-service.py
+cd src
+python svg-converter-service.py
 ```
 
-You may get the error `ModuleNotFoundError: No module named 'PIL'`.
+That should do the trick (tested on Ubuntu 17.04). However, somehow I used to get the error `ModuleNotFoundError: No module named 'PIL'`.
 
 - Fix a) add the dependency `Pillow = "==5.1.0"` to the Pipfile
 - or Fix b) 
