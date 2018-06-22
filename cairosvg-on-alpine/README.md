@@ -12,6 +12,7 @@ For details, check out the `src/Dockerfile`.
 # Run the Script on Ubuntu
 
 ```bash
+# pip install pipenv
 pipenv install
 pipenv shell
 cd src
@@ -25,5 +26,5 @@ That should do the trick (tested on Ubuntu 17.04). However, somehow I used to ge
 
 ```bash
 sudo apt-get install python3-dev python3-setuptools
-sudo apt-get install libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.5-dev tk8.5-dev
+sudo apt-get install python3-dev python3-setuptools libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.5-dev tk8.5-dev
 ```
