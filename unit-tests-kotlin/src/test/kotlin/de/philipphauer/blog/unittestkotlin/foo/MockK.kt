@@ -1,5 +1,8 @@
 package de.philipphauer.blog.unittestkotlin.foo
 
+import de.philipphauer.blog.unittestkotlin.DesignController
+import de.philipphauer.blog.unittestkotlin.DesignDAO
+import de.philipphauer.blog.unittestkotlin.DesignMapper
 import io.mockk.clearMocks
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -51,10 +54,10 @@ class DesignControllerTest_RecreatingMocks_MockK {
     }
 }
 
-class DesignDAO
-class DesignMapper
-class DesignController(val dao: DesignDAO, val mapper: DesignMapper) {
-    fun doSomething() {
-
-    }
-}
+//class DesignDAO
+//class DesignMapper
+//class DesignController(val dao: DesignDAO, val mapper: DesignMapper) {
+//    fun doSomething() {
+//
+//    }
+//}
