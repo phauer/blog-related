@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class TagClientTest {
+class TagClientTest {
     @Test
     fun `basic tag list`() {
     }
