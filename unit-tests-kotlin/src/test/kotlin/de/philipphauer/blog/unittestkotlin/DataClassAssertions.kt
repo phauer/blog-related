@@ -69,6 +69,59 @@ class DataClassAssertions {
             )
         )
     }
+
+    @Test
+    fun sophisticatedAssertions_single() {
+        val client = DesignClient()
+
+        val actualDesign = client.requestDesign(id = 1)
+
+        val expectedDesign = Design(
+            id = 2,
+            userId = 9,
+            name = "Cat",
+            dateCreated = Instant.ofEpochSecond(1518278198)
+        )
+        assertThat(actualDesign).isEqualToIgnoringGivenFields(expectedDesign, "dateCreated")
+        assertThat(actualDesign).isEqualToComparingOnlyGivenFields(expectedDesign, "id", "name")
+    }
+
+
+    @Test
+    fun sophisticatedAssertions_lists() {
+        val client = DesignClient()
+
+        val actualDesigns = client.getAllDesigns()
+
+        assertThat(actualDesigns).usingElementComparatorIgnoringFields("dateCreated").containsExactly(
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dogggg",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
+        )
+        assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dogggg",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
+        )
+    }
 }
 
 data class Design(
