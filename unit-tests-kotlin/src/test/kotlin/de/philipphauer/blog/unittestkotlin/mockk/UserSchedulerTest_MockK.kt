@@ -24,7 +24,7 @@ class UserSchedulerTest {
     @Test
     fun start() {
         val daoMock: UserDAO = mockk(relaxed = true)
-        val clientMock: UserClient = mockk(relaxed = true)
+        val clientMock: UserClient = mockk()
         val user = User(id = 1, name = "Ben", age = 29)
         every { clientMock.getUser(any()) } returns user
 
