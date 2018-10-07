@@ -42,7 +42,7 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.2.4</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
@@ -61,31 +61,33 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.15.9</version>
+				<version>0.21.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<authConfig> <!-- or use "docker login" up front to store the credentials on the local machine. -->
-						<username>phauer</username>
-						<password>docker123</password>
-					</authConfig>
+                    <!-- a) use "docker login" up front to store the credentials on the local machine. -->
+                    <!-- or b) comment in the following snippet -->
+					<!--<authConfig>-->
+						<!--<username>phauer</username>-->
+						<!--<password>docker123</password>-->
+					<!--</authConfig>-->
 					<images>
 						<image>
 							<name>${docker.repository.name}:${version.number}</name>
 							<alias>${project.artifactId}</alias>
 							<build>
-								<from>anapsix/alpine-java:jre8</from>
+								<from>openjdk:8-alpine</from>
 								<tags><!-- define additional tags for the image -->
 									<tag>latest</tag>
 								</tags>
 								<assembly>
-									<descriptor>assembly.xml</descriptor>
+									<descriptorRef>artifact</descriptorRef>
 								</assembly>
 								<ports>
 									<port>8080</port>
 								</ports>
 								<cmd>
 									<shell>
-										java -jar /maven/${project.artifactId}-${version.number}.jar
+										java -jar /maven/${project.build.finalName}.jar
 									</shell>
 								</cmd>
 							</build>
