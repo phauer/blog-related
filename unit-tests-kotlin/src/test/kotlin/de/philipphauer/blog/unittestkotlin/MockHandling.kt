@@ -8,7 +8,7 @@ import org.junit.jupiter.api.TestInstance
 
 // Do:
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DesignControllerTest {
+class DesignControllerTest_Mock {
 
     private val dao: DesignDAO = mock()
     private val mapper: DesignMapper = mock()

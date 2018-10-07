@@ -5,39 +5,32 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TagClientTest {
-    @Test
-    fun `basic tag list`() {
-    }
+class DesignControllerTest {
+    @Nested
+    inner class GetDesigns {
+        @Test
+        fun `all fields are included`() {
+        }
+        @Test
+        fun `limit parameter`() {
+        }
 
-    @Test
-    fun `empty tag list`() {
-    }
-
-    @Test
-    fun `empty tag translations`() {
+        @Test
+        fun `filter parameter`() {
+        }
     }
 
     @Nested
-    inner class ErrorCases {
+    inner class DeleteDesign {
         @Test
-        fun `server sends empty body`() {
+        fun `design is removed from db`() {
+        }
+        @Test
+        fun `return 404 on invalid id parameter`() {
         }
 
         @Test
-        fun `server sends invalid json`() {
-        }
-
-        @Test
-        fun `server sends 500`() {
-        }
-
-        @Test
-        fun `timeout - server response takes too long`() {
-        }
-
-        @Test
-        fun `not available at all - wrong url`() {
+        fun `return 401 if not authorized`() {
         }
     }
 }
