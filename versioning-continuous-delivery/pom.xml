@@ -5,7 +5,7 @@
 
 	<groupId>de.philipphauer.blog</groupId>
 	<artifactId>versioning-continuous-delivery</artifactId>
-	<version>${version.number}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
