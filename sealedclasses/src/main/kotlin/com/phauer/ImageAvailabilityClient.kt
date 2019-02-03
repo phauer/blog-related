@@ -1,5 +1,6 @@
 package com.phauer
 
+import com.phauer.common.restTemplate
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClientException
