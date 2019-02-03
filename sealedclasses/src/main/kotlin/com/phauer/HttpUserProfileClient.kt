@@ -16,18 +16,18 @@ class HttpUserProfileClient(
     /**
      * Version 1: With Exceptions
      */
-    @Throws(HttpUserProfileClientException::class) // this (or javadoc) may help to document the exception...
+    @Throws(UserProfileClientException::class) // this (or javadoc) may help to document the exception...
     fun requestUserProfile1(userId: String): UserProfileDTO = try {
         val userProfile =
             restTemplate.getForObject("http://localhost:5000/userProfiles/$userId", UserProfileDTO::class.java)!!
         userProfile
     } catch (ex: IOException) {
-        throw HttpUserProfileClientException(
+        throw UserProfileClientException(
             message = "Server request failed due to an IO exception. Id: $userId, Message: ${ex.message}",
             cause = ex
         )
     } catch (ex: RestClientException) {
-        throw HttpUserProfileClientException(
+        throw UserProfileClientException(
             message = "Server request failed. Id: $userId. status code: ${(ex as? RestClientResponseException)?.rawStatusCode}. body: ${(ex as? RestClientResponseException)?.responseBodyAsString}",
             cause = ex
         )
@@ -73,7 +73,7 @@ class HttpUserProfileClient(
     }
 }
 
-class HttpUserProfileClientException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
+class UserProfileClientException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
 
 sealed class UserProfileResult {
     data class Success(val userProfile: UserProfileDTO) : UserProfileResult()
@@ -95,14 +95,14 @@ fun main() {
      */
     val avatarUrl = try {
         client.requestUserProfile1(userId).avatarUrl
-    } catch (ex: HttpUserProfileClientException) {
+    } catch (ex: UserProfileClientException) {
         "http://localhost/defaultAvatar.png"
     }
 
     try {
         val result = client.requestUserProfile1(userId)
         processUserProfile(result)
-    } catch (ex: HttpUserProfileClientException) {
+    } catch (ex: UserProfileClientException) {
         queueDesignForRetry(userId, ex.message!!)
     }
 
