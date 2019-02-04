@@ -6,6 +6,7 @@ import com.phauer.common.restTemplate
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 import java.io.IOException
 
 /**
@@ -19,7 +20,7 @@ class HttpUserProfileClient(
     @Throws(UserProfileClientException::class) // this (or javadoc) may help to document the exception...
     fun requestUserProfile1(userId: String): UserProfileDTO = try {
         val userProfile =
-            restTemplate.getForObject("http://localhost:5000/userProfiles/$userId", UserProfileDTO::class.java)!!
+            restTemplate.getForObject<UserProfileDTO>("http://localhost:5000/userProfiles/$userId")!!
         userProfile
     } catch (ex: IOException) {
         throw UserProfileClientException(
@@ -38,7 +39,7 @@ class HttpUserProfileClient(
      */
     fun requestUserProfile2(userId: String): UserProfileResult = try {
         val userProfile =
-            restTemplate.getForObject("http://localhost:5000/userProfiles/$userId", UserProfileDTO::class.java)
+            restTemplate.getForObject<UserProfileDTO>("http://localhost:5000/userProfiles/$userId")!!
         UserProfileResult.Success(userProfile = userProfile)
     } catch (ex: IOException) {
         UserProfileResult.Error(
@@ -58,7 +59,7 @@ class HttpUserProfileClient(
      */
     fun requestUserProfile3(userId: String): Outcome<UserProfileDTO> = try {
         val userProfile =
-            restTemplate.getForObject("http://localhost:5000/userProfiles/$userId", UserProfileDTO::class.java)
+            restTemplate.getForObject<UserProfileDTO>("http://localhost:5000/userProfiles/$userId")!!
         Outcome.Success(value = userProfile)
     } catch (ex: IOException) {
         Outcome.Error(
