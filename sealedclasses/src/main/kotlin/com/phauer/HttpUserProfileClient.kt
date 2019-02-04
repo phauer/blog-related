@@ -71,13 +71,28 @@ class HttpUserProfileClient(
             cause = ex
         )
     }
+
+    fun downloadImage1(avatarUrl: String): ByteArray {
+        return ByteArray(0)
+    }
+
+    fun downloadImage2(avatarUrl: String): ImageDownloadResult {
+        return ImageDownloadResult.Success(ByteArray(0))
+    }
 }
 
 class UserProfileClientException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
+class ImageDownloadException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
+class SuspiciousException(message: String, cause: Exception? = null) : RuntimeException(message, cause)
 
 sealed class UserProfileResult {
     data class Success(val userProfile: UserProfileDTO) : UserProfileResult()
     data class Error(val message: String, val cause: Exception? = null) : UserProfileResult()
+}
+
+sealed class ImageDownloadResult {
+    data class Success(val image: ByteArray) : ImageDownloadResult()
+    data class Error(val message: String, val cause: Exception? = null) : ImageDownloadResult()
 }
 
 data class UserProfileDTO(
@@ -140,6 +155,57 @@ fun main() {
      less-error prone (no uncaught runtime exceptions, what about adding new exception types?)
      FP-compatibility (no side-effects)
      */
+
+
+}
+
+fun aMoreComplicatedExample() {
+    val client = HttpUserProfileClient(restTemplate())
+    val userId = "1"
+
+    try {
+        val profile = client.requestUserProfile1(userId)
+        try {
+            val image = client.downloadImage1(profile.avatarUrl)
+            processImage(image)
+        } catch (ex: ImageDownloadException) {
+            queueForRetry(userId, ex.message)
+        }
+    } catch (ex: UserProfileClientException) {
+        showMessageToUser(userId, ex.message)
+    } catch (ex: SuspiciousException) {
+        // which method throws this exception?
+        // requestUserProfile1()? downloadImage1()? processImage()? queueForRetry()?
+    }
+    // have we forgot to catch an exception? Who knows.
+
+
+    // vs
+
+    when (val profileResult = client.requestUserProfile2(userId)) {
+        is UserProfileResult.Success -> {
+            when (val imageResult = client.downloadImage2(profileResult.userProfile.avatarUrl)) {
+                is ImageDownloadResult.Success -> processImage(imageResult.image)
+                is ImageDownloadResult.Error -> queueForRetry(userId, imageResult.message)
+            }
+        }
+        is UserProfileResult.Error -> showMessageToUser(userId, profileResult.message)
+    }
+
+
+}
+
+fun showMessageToUser(userId: String, message: String?) {
+
+
+}
+
+fun queueForRetry(userId: String, message: String?) {
+
+}
+
+fun processImage(image: ByteArray) {
+
 }
 
 
