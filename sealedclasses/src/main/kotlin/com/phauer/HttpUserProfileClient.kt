@@ -19,9 +19,7 @@ class HttpUserProfileClient(
      */
     @Throws(UserProfileClientException::class) // this (or javadoc) may help to document the exception...
     fun requestUserProfile1(userId: String): UserProfileDTO = try {
-        val userProfile =
-            restTemplate.getForObject<UserProfileDTO>("http://localhost:5000/userProfiles/$userId")!!
-        userProfile
+        restTemplate.getForObject<UserProfileDTO>("http://localhost:5000/userProfiles/$userId")!!
     } catch (ex: IOException) {
         throw UserProfileClientException(
             message = "Server request failed due to an IO exception. Id: $userId, Message: ${ex.message}",
