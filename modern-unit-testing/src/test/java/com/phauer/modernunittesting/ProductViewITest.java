@@ -1,7 +1,9 @@
 package com.phauer.modernunittesting;
 
+import com.github.mvysny.kaributesting.v10.GridKt;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import java.time.Instant;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProductViewITest {
@@ -34,22 +37,20 @@ class ProductViewITest {
 
     @Test
     public void databaseDataIsCorrectlyReturned() {
-        insert(
+        insertIntoDatabase(
                 createProductEntity(1, "Smartphone", 10, 5, Instant.ofEpochSecond(1)),
                 createProductEntity(2, "Notebook", 12, 9, Instant.ofEpochSecond(2))
         );
 
-        Button button = _get(view, Button.class, spec -> spec.withText("Hello World"));
+        Button button = _get(view, Button.class, spec -> spec.withText("Load Products"));
         _click(button);
 
-        // TODO do something meaningful
-//        view._get
-        // TODO assert
-//        final Grid<Product> grid = _get(Grid.class);
-//        assertEquals(1, _size(grid));
+        Grid<ProductModel> grid = _get(view, Grid.class);
+        assertThat(GridKt._size(grid)).isEqualTo(2);
+        assertThat(GridKt._get(grid, 0)).isEqualTo(new ProductModel().setId("1").setName("Smartphone"));
     }
 
-    private void insert(Product smartphone, Product notebook) {
+    private void insertIntoDatabase(Product smartphone, Product notebook) {
 
     }
 
