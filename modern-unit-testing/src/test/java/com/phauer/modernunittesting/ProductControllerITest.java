@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // Let's ignore the framework-specific wiring of the HTTP stack for now.
 public class ProductControllerITest {
 
-    private MockWebServer mockServer;
+    private MockWebServer taxService;
     private ProductDAO dao;
     private ProductController controller;
 
@@ -26,11 +26,11 @@ public class ProductControllerITest {
     public void setup() throws IOException {
         PostgreSQLContainer db = new PostgreSQLContainer();
         db.start();
-        mockServer = new MockWebServer();
-        mockServer.start();
+        taxService = new MockWebServer();
+        taxService.start();
 
         dao = new ProductDAO(db.getJdbcUrl());
-        TaxServiceClient client = new TaxServiceClient(mockServer.url("").toString());
+        TaxServiceClient client = new TaxServiceClient(taxService.url("").toString());
         PriceCalculator calculator = new PriceCalculator();
 
         controller = new ProductController(dao, client, calculator);
