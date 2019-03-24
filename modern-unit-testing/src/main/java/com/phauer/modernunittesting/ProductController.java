@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @RestController
 public class ProductController {
 
-    private ProductDAO dao;
+    private final ProductDAO dao;
 
     public ProductController(ProductDAO dao, TaxServiceClient client, PriceCalculator calculator) {
         this.dao = dao;
@@ -30,6 +30,7 @@ public class ProductController {
     private ProductDTO toDto(ProductEntity entity) {
         return new ProductDTO()
                 .setId(entity.getId())
-                .setName(entity.getName());
+                .setName(entity.getName())
+                .setPrice(0.5);
     }
 }

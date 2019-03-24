@@ -3,7 +3,6 @@ package com.phauer.modernunittesting;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +17,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,9 +38,12 @@ public class ProductControllerITest {
         db.start();
         DataSource dataSource = DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
+                .username(db.getUsername())
+                .password(db.getPassword())
                 .url(db.getJdbcUrl())
                 .build();
         template = new JdbcTemplate(dataSource);
+        SchemaCreator.createSchema(template);
         ProductDAO dao = new ProductDAO(template);
 
         // TaxServiceClient
@@ -64,8 +65,8 @@ public class ProductControllerITest {
     @Test
     public void databaseDataIsCorrectlyReturned() throws Exception {
         insertIntoDatabase(
-                createProductEntity(1, "Smartphone", 10, 5, Instant.ofEpochSecond(1)),
-                createProductEntity(2, "Notebook", 12, 9, Instant.ofEpochSecond(2))
+                new ProductEntity().setId("90").setName("Envelope"),
+                new ProductEntity().setId("50").setName("Pen")
         );
         taxService.enqueue(new MockResponse()
                 .setResponseCode(200)
@@ -77,18 +78,10 @@ public class ProductControllerITest {
                 .andReturn().getResponse().getContentAsString();
 
         assertThat(toDTOs(responseJson)).containsOnly(
-                createProductDTO("1", "Smartphone", 250.00),
-                createProductDTO("2", "Notebook", 1000.00)
+                new ProductDTO().setId("90").setName("Envelope").setPrice(0.5),
+                new ProductDTO().setId("50").setName("Pen").setPrice(0.5)
         );
         // or assert the data in the database if the request should change something.
-    }
-
-    private Response requestResource(String s) {
-        return null;
-    }
-
-    private ProductDTO createProductDTO(String s, String smartphone, double v) {
-        return null;
     }
 
     private List<ProductDTO> toDTOs(String string) throws IOException {
@@ -97,22 +90,23 @@ public class ProductControllerITest {
         return new ObjectMapper().readValue(string, dtoType);
     }
 
-    private Response requestAndGetProducts(String s) {
-        return null;
-    }
-
-    private void insertIntoDatabase(Object smartphone, Object notebook) {
-    }
-
-    private Object createProductEntity(int i, String smartphone, int i1, int i2, Instant ofEpochSecond) {
-        return null;
-    }
-
-    private void setUpTaxServiceMockResponse(MockResponse setBody) {
+    private void insertIntoDatabase(ProductEntity... products) {
+        for (ProductEntity product : products) {
+            template.execute("insert into products(id, name) values ('" + product.getId() + "', '" + product.getName() + "');");
+        }
     }
 
     private String toJson(TaxServiceResponseDTO taxServiceResponseDTO) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(taxServiceResponseDTO);
+    }
+
+    private DataSource createLocalDataSource() {
+        return DataSourceBuilder.create()
+                .driverClassName("org.postgresql.Driver")
+                .username("postgres")
+                .password("password")
+                .url("jdbc:postgresql://localhost:5432/")
+                .build();
     }
 
 }

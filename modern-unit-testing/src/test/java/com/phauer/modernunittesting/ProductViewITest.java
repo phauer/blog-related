@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
-import java.time.Instant;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
@@ -32,9 +31,12 @@ class ProductViewITest {
         db.start();
         DataSource dataSource = DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
+                .username(db.getUsername())
+                .password(db.getPassword())
                 .url(db.getJdbcUrl())
                 .build();
         template = new JdbcTemplate(dataSource);
+        SchemaCreator.createSchema(template);
     }
 
     @BeforeEach
@@ -44,10 +46,10 @@ class ProductViewITest {
     }
 
     @Test
-    public void databaseDataIsCorrectlyReturned() {
+    public void prodcutsAreCorrectlyDisplayedInTable() {
         insertIntoDatabase(
-                createProductEntity(1, "Smartphone", 10, 5, Instant.ofEpochSecond(1)),
-                createProductEntity(2, "Notebook", 12, 9, Instant.ofEpochSecond(2))
+                new ProductEntity().setId("90").setName("Envelope"),
+                new ProductEntity().setId("50").setName("Pen")
         );
 
         Button button = _get(view, Button.class, spec -> spec.withText("Load Products"));
@@ -55,15 +57,13 @@ class ProductViewITest {
 
         Grid<ProductModel> grid = _get(view, Grid.class);
         assertThat(GridKt._size(grid)).isEqualTo(2);
-        assertThat(GridKt._get(grid, 0)).isEqualTo(new ProductModel().setId("1").setName("Smartphone"));
+        assertThat(GridKt._get(grid, 0))
+                .isEqualTo(new ProductModel().setId("90").setName("Envelope"));
     }
 
-    private void insertIntoDatabase(Product smartphone, Product notebook) {
-
+    private void insertIntoDatabase(ProductEntity... products) {
+        for (ProductEntity product : products) {
+            template.execute("insert into products(id, name) values ('" + product.getId() + "', '" + product.getName() + "');");
+        }
     }
-
-    private Product createProductEntity(int i, String smartphone, int i1, int i2, Instant ofEpochSecond) {
-        return new Product();
-    }
-
 }

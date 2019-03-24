@@ -1,6 +1,7 @@
 package com.phauer.modernunittesting;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class ProductEntity {
     private String id;
@@ -36,5 +37,13 @@ public class ProductEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ProductEntity.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .toString();
     }
 }

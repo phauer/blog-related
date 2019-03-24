@@ -3,6 +3,8 @@ package com.phauer.modernunittesting;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -15,11 +17,15 @@ public class ProductDAO {
     }
 
     public List<ProductEntity> findProducts() {
-        return List.of(
-                new ProductEntity().setId("1").setName("Smartphone")
-                , new ProductEntity().setId("2").setName("Notebook")
-        );
+        return template.query("select * from products;", this::map);
     }
+
+    private ProductEntity map(ResultSet resultSet, int i) throws SQLException {
+        return new ProductEntity()
+                .setId(resultSet.getString("id"))
+                .setName(resultSet.getString("name"));
+    }
+
 }
 
 
