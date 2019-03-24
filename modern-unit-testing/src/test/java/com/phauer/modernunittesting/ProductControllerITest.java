@@ -9,11 +9,14 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -27,20 +30,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProductControllerITest {
 
     private MockWebServer taxService;
-    private ProductDAO dao;
+    private JdbcTemplate template;
     private MockMvc client;
 
     @BeforeAll
     public void setup() throws IOException {
+        // ProductDAO
         PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
         db.start();
+        DataSource dataSource = DataSourceBuilder.create()
+                .driverClassName("org.postgresql.Driver")
+                .url(db.getJdbcUrl())
+                .build();
+        template = new JdbcTemplate(dataSource);
+        ProductDAO dao = new ProductDAO(template);
+
+        // TaxServiceClient
         taxService = new MockWebServer();
         taxService.start();
-
-        dao = new ProductDAO(db.getJdbcUrl());
         TaxServiceClient client = new TaxServiceClient(taxService.url("").toString());
+
+        // PriceCalculator
         PriceCalculator calculator = new PriceCalculator();
 
+        // ProductController
         ProductController controller = new ProductController(dao, client, calculator);
         this.client = MockMvcBuilders
                 .standaloneSetup(controller)
@@ -54,7 +67,7 @@ public class ProductControllerITest {
                 createProductEntity(1, "Smartphone", 10, 5, Instant.ofEpochSecond(1)),
                 createProductEntity(2, "Notebook", 12, 9, Instant.ofEpochSecond(2))
         );
-        setUpTaxServiceMockResponse(new MockResponse()
+        taxService.enqueue(new MockResponse()
                 .setResponseCode(200)
                 .setBody(toJson(new TaxServiceResponseDTO(Locale.GERMANY, 0.19)))
         );

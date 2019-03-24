@@ -8,8 +8,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import javax.sql.DataSource;
 import java.time.Instant;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
@@ -19,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProductViewITest {
 
-    private ProductDAO dao;
+    private JdbcTemplate template;
     private ProductView view;
 
     @BeforeAll
@@ -27,11 +30,16 @@ class ProductViewITest {
         MockVaadin.setup();
         PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
         db.start();
-        dao = new ProductDAO(db.getJdbcUrl());
+        DataSource dataSource = DataSourceBuilder.create()
+                .driverClassName("org.postgresql.Driver")
+                .url(db.getJdbcUrl())
+                .build();
+        template = new JdbcTemplate(dataSource);
     }
 
     @BeforeEach
     public void beforeEach() {
+        ProductDAO dao = new ProductDAO(template);
         view = new ProductView(dao);
     }
 

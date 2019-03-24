@@ -1,6 +1,6 @@
 package com.phauer.modernunittesting;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -8,8 +8,10 @@ import java.util.List;
 @Component
 public class ProductDAO {
 
-    public ProductDAO(@Value("jdbcUrl") String jdbcUrl) {
+    private final JdbcTemplate template;
 
+    public ProductDAO(JdbcTemplate template) {
+        this.template = template;
     }
 
     public List<ProductEntity> findProducts() {
