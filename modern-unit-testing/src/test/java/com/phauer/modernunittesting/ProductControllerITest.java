@@ -1,10 +1,17 @@
 package com.phauer.modernunittesting;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
@@ -13,31 +20,36 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Pseudo-Code ahead!
-// Let's ignore the framework-specific wiring of the HTTP stack for now.
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProductControllerITest {
 
     private MockWebServer taxService;
     private ProductDAO dao;
-    private ProductController controller;
+    private MockMvc client;
 
     @BeforeAll
     public void setup() throws IOException {
-        PostgreSQLContainer db = new PostgreSQLContainer();
+        PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
         db.start();
         taxService = new MockWebServer();
         taxService.start();
 
-        dao = new ProductDAO(db.getJdbcUrl());
+        dao = new ProductDAO("asdf");
         TaxServiceClient client = new TaxServiceClient(taxService.url("").toString());
         PriceCalculator calculator = new PriceCalculator();
 
-        controller = new ProductController(dao, client, calculator);
+        ProductController controller = new ProductController(dao, client, calculator);
+        this.client = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setViewResolvers(new InternalResourceViewResolver())
+                .build();
     }
 
     @Test
-    public void databaseDataIsCorrectlyReturned() throws IOException {
+    public void databaseDataIsCorrectlyReturned() throws Exception {
         insertIntoDatabase(
                 createProductEntity(1, "Smartphone", 10, 5, Instant.ofEpochSecond(1)),
                 createProductEntity(2, "Notebook", 12, 9, Instant.ofEpochSecond(2))
@@ -47,10 +59,11 @@ public class ProductControllerITest {
                 .setBody(toJson(new TaxServiceResponseDTO(Locale.GERMANY, 0.19)))
         );
 
-        Response response = requestResource("/products");
+        String responseJson = client.perform(get("/products"))
+                .andExpect(status().is(200))
+                .andReturn().getResponse().getContentAsString();
 
-        assertThat(response.code()).isEqualTo(200);
-        assertThat(toDTOs(response.body().string())).containsOnly(
+        assertThat(toDTOs(responseJson)).containsOnly(
                 createProductDTO("1", "Smartphone", 250.00),
                 createProductDTO("2", "Notebook", 1000.00)
         );
@@ -65,8 +78,10 @@ public class ProductControllerITest {
         return null;
     }
 
-    private List<ProductDTO> toDTOs(String string) {
-        return null;
+    private List<ProductDTO> toDTOs(String string) throws IOException {
+        TypeReference dtoType = new TypeReference<List<ProductDTO>>() {
+        };
+        return new ObjectMapper().readValue(string, dtoType);
     }
 
     private Response requestAndGetProducts(String s) {
@@ -83,10 +98,8 @@ public class ProductControllerITest {
     private void setUpTaxServiceMockResponse(MockResponse setBody) {
     }
 
-    private String toJson(TaxServiceResponseDTO taxServiceResponseDTO) {
-        return null;
+    private String toJson(TaxServiceResponseDTO taxServiceResponseDTO) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(taxServiceResponseDTO);
     }
 
-    // implementation fo the helper methods insertIntoDatabase(),
-    // createProductEntity(), createProductDTO(), requestAndGetProducts()
 }
