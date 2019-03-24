@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -105,22 +106,26 @@ public class ProductControllerITest {
     }
 
     private DataSource createDataSourceAndStartDatabaseIfNecessary() {
+        DataSourceBuilder<?> builder = DataSourceBuilder.create().driverClassName("org.postgresql.Driver");
         try {
             // e.g. if started once via `docker-compose up`. see docker-compose.yml.
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress("localhost", 5432), 100);
             socket.close();
-            return DataSourceBuilder.create().driverClassName("org.postgresql.Driver")
-                    .username("postgres").password("password")
+            return builder.username("postgres").password("password")
                     .url("jdbc:postgresql://localhost:5432/")
                     .build();
         } catch (Exception ex) {
             PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
             db.start();
-            return DataSourceBuilder.create().driverClassName("org.postgresql.Driver")
-                    .username(db.getUsername()).password(db.getPassword())
+            return builder.username(db.getUsername()).password(db.getPassword())
                     .url(db.getJdbcUrl())
                     .build();
         }
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        template.execute("truncate table products");
     }
 }
