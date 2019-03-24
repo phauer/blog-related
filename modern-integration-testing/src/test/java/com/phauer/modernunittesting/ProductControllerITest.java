@@ -17,6 +17,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,6 +35,8 @@ public class ProductControllerITest {
 
     @BeforeAll
     public void setup() throws IOException {
+//        DataSource dataSource = createDataSourceAndStartDatabaseIfNecessary();
+
         // ProductDAO
         PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
         db.start();
@@ -100,13 +104,23 @@ public class ProductControllerITest {
         return new ObjectMapper().writeValueAsString(taxServiceResponseDTO);
     }
 
-    private DataSource createLocalDataSource() {
-        return DataSourceBuilder.create()
-                .driverClassName("org.postgresql.Driver")
-                .username("postgres")
-                .password("password")
-                .url("jdbc:postgresql://localhost:5432/")
-                .build();
+    private DataSource createDataSourceAndStartDatabaseIfNecessary() {
+        try {
+            // e.g. if started once via `docker-compose up`. see docker-compose.yml.
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress("localhost", 5432), 100);
+            socket.close();
+            return DataSourceBuilder.create().driverClassName("org.postgresql.Driver")
+                    .username("postgres").password("password")
+                    .url("jdbc:postgresql://localhost:5432/")
+                    .build();
+        } catch (Exception ex) {
+            PostgreSQLContainer db = new PostgreSQLContainer("postgres:11.2-alpine");
+            db.start();
+            return DataSourceBuilder.create().driverClassName("org.postgresql.Driver")
+                    .username(db.getUsername()).password(db.getPassword())
+                    .url(db.getJdbcUrl())
+                    .build();
+        }
     }
-
 }
