@@ -37,7 +37,7 @@ public class ProductControllerITest {
         taxService = new MockWebServer();
         taxService.start();
 
-        dao = new ProductDAO("asdf");
+        dao = new ProductDAO(db.getJdbcUrl());
         TaxServiceClient client = new TaxServiceClient(taxService.url("").toString());
         PriceCalculator calculator = new PriceCalculator();
 
