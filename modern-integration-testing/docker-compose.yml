@@ -7,9 +7,9 @@ services:
       # user: postgres
       # pw: password
     ports:
-      - 5432:5432
+      - "5432:5432"
   adminer:
     image: adminer
     restart: always
     ports:
-      - 90:8080
+      - "90:8080"

@@ -47,12 +47,12 @@ public class ProductControllerITest {
                 .password(db.getPassword())
                 .url(db.getJdbcUrl())
                 .build();
-        template = new JdbcTemplate(dataSource);
+        this.template = new JdbcTemplate(dataSource);
         SchemaCreator.createSchema(template);
         ProductDAO dao = new ProductDAO(template);
 
         // TaxServiceClient
-        taxService = new MockWebServer();
+        this.taxService = new MockWebServer();
         taxService.start();
         TaxServiceClient client = new TaxServiceClient(taxService.url("").toString());
 
@@ -61,10 +61,7 @@ public class ProductControllerITest {
 
         // ProductController
         ProductController controller = new ProductController(dao, client, calculator);
-        this.client = MockMvcBuilders
-                .standaloneSetup(controller)
-                .setViewResolvers(new InternalResourceViewResolver())
-                .build();
+        this.client = MockMvcBuilders.standaloneSetup(controller).setViewResolvers(new InternalResourceViewResolver()).build();
     }
 
     @Test
