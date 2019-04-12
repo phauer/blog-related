@@ -20,6 +20,7 @@ public class CustomVaadinServiceListener implements VaadinServiceInitListener {
 
     static class CustomBootstrapListener implements BootstrapListener {
 
+        @Override
         public void modifyBootstrapPage(BootstrapPageResponse response) {
             Document document = response.getDocument();
             Element cssRefreshScriptTag = document.createElement("script");
