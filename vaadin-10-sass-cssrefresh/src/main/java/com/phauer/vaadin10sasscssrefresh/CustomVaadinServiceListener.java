@@ -5,7 +5,6 @@ import com.vaadin.flow.server.BootstrapPageResponse;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,11 +21,8 @@ public class CustomVaadinServiceListener implements VaadinServiceInitListener {
 
         @Override
         public void modifyBootstrapPage(BootstrapPageResponse response) {
-            Document document = response.getDocument();
-            Element cssRefreshScriptTag = document.createElement("script");
-            cssRefreshScriptTag.attr("type", "text/javascript");
-            cssRefreshScriptTag.attr("src", "/js/cssrefresh.js");
-            document.head().appendChild(cssRefreshScriptTag);
+            Document doc = response.getDocument();
+            doc.head().append("<script type=\"text/javascript\" src=\"/js/cssrefresh.js\"></script>");
         }
 
     }
