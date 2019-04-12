@@ -1,0 +1,33 @@
+@import "variables";
+@import "exampleView";
+
+
+// vaadin lumo theme adjustments
+:root {
+  --lumo-primary-text-color: #{$main-color};
+  --lumo-primary-color-50pct: rgba(255, 166, 76, 0.5);
+  --lumo-primary-color-10pct: rgba(255, 166, 76, 0.1);
+  --lumo-primary-color: #{$main-color};
+
+  --lumo-error-text-color: #{$error};
+  --lumo-error-color-50pct: rgba(231, 76, 60, 0.5);
+  --lumo-error-color-10pct: rgba(231, 76, 60, 0.1);
+  --lumo-error-color: #{$error};
+
+  --lumo-success-text-color: #{$success};
+  --lumo-success-color-50pct: rgba(39, 174, 96, 0.5);
+  --lumo-success-color-10pct: rgba(39, 174, 96, 0.1);
+  --lumo-success-color: #{$success};
+}
+
+.v-loading-indicator.first {
+  background-color: #ecf0f1;
+}
+
+.v-loading-indicator.second {
+  background-color: #bdc3c7;
+}
+
+.v-loading-indicator.third {
+  background-color: $error;
+}
