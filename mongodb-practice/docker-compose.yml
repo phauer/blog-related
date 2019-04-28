@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mongo:
+    image: "mongo:4.0.2"
+    ports:
+      - "27017:27017"
+    command: --profile=1 --slowms=0
+  mongo-express:
+    image: "mongo-express:0.49.0"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo

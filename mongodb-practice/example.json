@@ -1,0 +1,2 @@
+db.products.insert({name: "Smartphone", amount: 5, dateCreated: new Date(), isActive: true, tags: ["a", "b"]})
+db.products.insert({name: "Notebook", amount: 2, dateCreated: new Date(), isActive: false, tags: []})
