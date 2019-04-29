@@ -12,12 +12,12 @@ def seed():
     print("Start seeding...")
     client = MongoClient('mongodb://mongo:27017/test')
     db = client.test
-    new_products = [generate_products() for _ in range(500)]
+    new_products = [generate_product() for _ in range(500)]
     db.products.delete_many({})
     db.products.insert_many(new_products)
     print("Finished seeding.")
 
-def generate_products():
+def generate_product():
     return {
         "_id": ObjectId(),
         "name": faker.company(),
