@@ -5,6 +5,10 @@ services:
     ports:
       - "27017:27017"
     command: --profile=1 --slowms=0
+  mongo-seeding:
+    build: ./local-dev/mongo-seeding/
+    depends_on:
+      - mongo
   mongo-express:
     image: "mongo-express:0.49.0"
     ports:
