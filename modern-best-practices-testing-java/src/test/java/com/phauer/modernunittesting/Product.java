@@ -10,7 +10,7 @@ public class Product {
     private String name;
     private String category;
     private Instant dateCreated;
-
+    private boolean liked;
 
     public Product() {
 
@@ -56,6 +56,15 @@ public class Product {
 
     public Product setDateCreated(Instant dateCreated) {
         this.dateCreated = dateCreated;
+        return this;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public Product setLiked(boolean liked) {
+        this.liked = liked;
         return this;
     }
 

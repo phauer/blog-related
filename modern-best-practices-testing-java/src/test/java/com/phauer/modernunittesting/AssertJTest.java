@@ -27,9 +27,8 @@ public class AssertJTest {
                 createProductDTO("1", "Smartphone", 250.00)
         );
 
-        assertThat(actualProductList).anySatisfy(product -> {
-            assertThat(product.getDateCreated()).isBetween(instant1, instant2);
-        });
+        assertThat(actualProductList)
+                .anySatisfy(product -> assertThat(product.getDateCreated()).isBetween(instant1, instant2));
 
         assertThat(actualProduct)
                 .isEqualToIgnoringGivenFields(expectedProduct, "id");
@@ -41,6 +40,24 @@ public class AssertJTest {
         assertThat(actualProductList)
                 .extracting(Product::getId)
                 .containsExactly(1, 2);
+
+        assertThat(actualProductList)
+                .filteredOn(product -> product.getCategory().equals("Smartphone"))
+                .extracting(Product::getId)
+                .containsOnly(1, 2);
+
+        assertThat(actualProductList)
+                .anySatisfy(product -> {
+                    assertThat(product.getCategory()).isEqualTo("Smartphone");
+                    assertThat(product.isLiked()).isTrue();
+                });
+
+        assertThat(actualProductList)
+                .filteredOn(product -> product.getCategory().equals("Smartphone"))
+                .allSatisfy(product -> assertThat(product.isLiked()).isTrue());
+
+        actualProductList.get(0).setDateCreated(Instant.now());
+        assertThat(actualProductList.get(0).getDateCreated()).isBetween(instant1, instant2);
 
         // Don't
         assertTrue(actualProductList.contains(expectedProduct));
