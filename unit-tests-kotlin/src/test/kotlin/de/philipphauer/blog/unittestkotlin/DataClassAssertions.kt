@@ -1,5 +1,7 @@
 package de.philipphauer.blog.unittestkotlin
 
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -47,6 +49,27 @@ class DataClassAssertions {
          */
     }
 
+    @Test
+    fun test2Kotest() {
+        val client = DesignClient()
+
+        val actualDesign = client.requestDesign(id = 1)
+
+        val expectedDesign = Design(
+            id = 2,
+            userId = 9,
+            name = "Cat",
+            dateCreated = Instant.ofEpochSecond(1518278198)
+        )
+        actualDesign shouldBe expectedDesign
+
+        /*
+        org.opentest4j.AssertionFailedError: expected:<Design(id=2, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)> but was:<Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)>
+        Expected :Design(id=2, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
+        Actual   :Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
+         */
+    }
+
     //Do
     @Test
     fun lists() {
@@ -55,19 +78,37 @@ class DataClassAssertions {
         val actualDesigns = client.getAllDesigns()
 
         assertThat(actualDesigns).containsExactly(
-            Design(
-                id = 1,
-                userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
-            ),
-            Design(
-                id = 2,
-                userId = 4,
-                name = "Dogggg",
-                dateCreated = Instant.ofEpochSecond(1518279000)
-            )
+            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
         )
+        /*
+        java.lang.AssertionError:
+        Expecting:
+          <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
+            Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+        to contain exactly (and in same order):
+          <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
+            Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
+        but some elements were not found:
+          <[Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
+        and others were not expected:
+          <[Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+         */
+    }
+
+    @Test
+    fun listsKotest() {
+        val client = DesignClient()
+
+        val actualDesigns = client.getAllDesigns()
+
+        actualDesigns.shouldContainExactly(
+            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+        )
+        /*
+        java.lang.AssertionError: Collection should be exactly [Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z), Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)] but was [Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z), Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]
+         */
     }
 
     @Test
