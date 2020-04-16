@@ -1,6 +1,6 @@
 package de.philipphauer.blog.unittestkotlin.mockk
 
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifySequence
@@ -18,7 +18,7 @@ class UserSchedulerTest {
 
     @BeforeEach
     fun init() {
-        clearMocks(dao, client)
+        clearAllMocks()
     }
 
     @Test

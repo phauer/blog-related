@@ -1,11 +1,11 @@
 package de.philipphauer.blog.unittestkotlin
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.reset
 import com.vaadin.navigator.View
 import com.vaadin.ui.Button
 import com.vaadin.ui.Panel
-import org.assertj.core.api.Assertions.assertThat
+import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -13,21 +13,22 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DesignViewTest {
 
-    private val dao: DesignDAO = mock()
+    private val dao: DesignDAO = mockk()
+
     // the class under test has state
     private lateinit var view: DesignView
 
     @BeforeEach
     fun init() {
-        reset(dao)
+        clearAllMocks()
         view = DesignView(dao)
     }
 
     @Test
     fun changeButton() {
-        assertThat(view.button.caption).isEqualTo("Hi")
+        view.button.caption shouldBe "Hi"
         view.changeButton()
-        assertThat(view.button.caption).isEqualTo("Hallo")
+        view.button.caption shouldBe "Hallo"
     }
 }
 

@@ -1,7 +1,7 @@
 package de.philipphauer.blog.unittestkotlin
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.reset
+import io.mockk.clearAllMocks
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.TestInstance
@@ -10,13 +10,13 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DesignControllerTest_Mock {
 
-    private val dao: DesignDAO = mock()
-    private val mapper: DesignMapper = mock()
+    private val dao: DesignDAO = mockk()
+    private val mapper: DesignMapper = mockk()
     private val controller = DesignController(dao, mapper)
 
     @BeforeEach
     fun init() {
-        reset(dao, mapper)
+        clearAllMocks()
     }
 
     // takes 210 ms
@@ -36,8 +36,8 @@ class DesignControllerTest_RecreatingMocks {
 
     @BeforeEach
     fun init() {
-        dao = mock()
-        mapper = mock()
+        dao = mockk()
+        mapper = mockk()
         controller = DesignController(dao, mapper)
     }
 

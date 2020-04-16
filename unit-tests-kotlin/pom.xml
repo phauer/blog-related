@@ -57,15 +57,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.nhaarman</groupId>
-            <artifactId>mockito-kotlin</artifactId>
-            <version>1.5.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.mockk</groupId>
             <artifactId>mockk</artifactId>
-            <version>1.7.4</version>
+            <version>1.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
