@@ -1,6 +1,8 @@
 package de.philipphauer.blog.unittestkotlin
 
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
+import io.kotest.matchers.equality.shouldBeEqualToUsingFields
 import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -50,7 +52,7 @@ class DataClassAssertions {
     }
 
     @Test
-    fun test2Kotest() {
+    fun test2_kotest() {
         val client = DesignClient()
 
         val actualDesign = client.requestDesign(id = 1)
@@ -97,7 +99,7 @@ class DataClassAssertions {
     }
 
     @Test
-    fun listsKotest() {
+    fun lists_kotest() {
         val client = DesignClient()
 
         val actualDesigns = client.getAllDesigns()
@@ -107,7 +109,18 @@ class DataClassAssertions {
             Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
         )
         /*
-        java.lang.AssertionError: Collection should be exactly [Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z), Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)] but was [Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z), Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]
+        java.lang.AssertionError: Expecting: [
+          Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
+          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
+        ] but was: [
+          Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
+          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+        ]
+        Some elements were missing: [
+          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
+        ] and some elements were unexpected: [
+          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+        ]
          */
     }
 
@@ -127,6 +140,21 @@ class DataClassAssertions {
         assertThat(actualDesign).isEqualToComparingOnlyGivenFields(expectedDesign, "id", "name")
     }
 
+    @Test
+    fun sophisticatedAssertions_single_kotest() {
+        val client = DesignClient()
+
+        val actualDesign = client.requestDesign(id = 1)
+
+        val expectedDesign = Design(
+            id = 2,
+            userId = 9,
+            name = "Cat",
+            dateCreated = Instant.ofEpochSecond(1518278198)
+        )
+        actualDesign.shouldBeEqualToIgnoringFields(expectedDesign, Design::dateCreated)
+        actualDesign.shouldBeEqualToUsingFields(expectedDesign, Design::id, Design::name)
+    }
 
     @Test
     fun sophisticatedAssertions_lists() {
@@ -135,33 +163,30 @@ class DataClassAssertions {
         val actualDesigns = client.getAllDesigns()
 
         assertThat(actualDesigns).usingElementComparatorIgnoringFields("dateCreated").containsExactly(
-            Design(
-                id = 1,
-                userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
-            ),
-            Design(
-                id = 2,
-                userId = 4,
-                name = "Dogggg",
-                dateCreated = Instant.ofEpochSecond(1518279000)
-            )
+            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
         )
         assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
-            Design(
-                id = 1,
-                userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
-            ),
-            Design(
-                id = 2,
-                userId = 4,
-                name = "Dogggg",
-                dateCreated = Instant.ofEpochSecond(1518279000)
-            )
+            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
         )
+    }
+
+    @Test
+    fun sophisticatedAssertions_lists_kotest() {
+        val client = DesignClient()
+
+        val actualDesigns = client.getAllDesigns()
+
+        // TODO doesn't seem to exist in kotest yet
+//        assertThat(actualDesigns).usingElementComparatorIgnoringFields("dateCreated").containsExactly(
+//            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+//            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+//        )
+//        assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
+//            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
+//            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+//        )
     }
 }
 
