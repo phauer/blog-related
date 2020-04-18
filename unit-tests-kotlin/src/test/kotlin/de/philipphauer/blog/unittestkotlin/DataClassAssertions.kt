@@ -100,20 +100,20 @@ class DataClassAssertions {
 
         assertThat(actualDesigns).containsExactly(
             Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
         )
         /*
         java.lang.AssertionError:
         Expecting:
           <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-            Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+            Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
         to contain exactly (and in same order):
           <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-            Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
+            Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
         but some elements were not found:
-          <[Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
-        and others were not expected:
           <[Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+        and others were not expected:
+          <[Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
          */
     }
 
@@ -125,20 +125,20 @@ class DataClassAssertions {
 
         actualDesigns.shouldContainExactly(
             Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
         )
         /*
         java.lang.AssertionError: Expecting: [
           Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
         ] but was: [
           Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
         ]
         Some elements were missing: [
-          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
-        ] and some elements were unexpected: [
           Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+        ] and some elements were unexpected: [
+          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
         ]
          */
     }
@@ -183,11 +183,11 @@ class DataClassAssertions {
 
         assertThat(actualDesigns).usingElementComparatorIgnoringFields("dateCreated").containsExactly(
             Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
         )
         assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
             Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
         )
     }
 
@@ -242,6 +242,6 @@ class DesignClient {
 
     fun getAllDesigns() = listOf(
         Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-        Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
+        Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
     )
 }
