@@ -7,7 +7,6 @@ import io.kotest.matchers.equality.shouldBeEqualToUsingFields
 import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.Instant
 
 class DataClassAssertions {
 
@@ -21,7 +20,6 @@ class DataClassAssertions {
         assertThat(actualDesign.id).isEqualTo(2)
         assertThat(actualDesign.userId).isEqualTo(9)
         assertThat(actualDesign.name).isEqualTo("Cat")
-        assertThat(actualDesign.dateCreated).isEqualTo(Instant.ofEpochSecond(1518278198))
 
         /*
         org.junit.ComparisonFailure: expected:<[2]> but was:<[1]>
@@ -39,7 +37,6 @@ class DataClassAssertions {
         actualDesign.id shouldBe 2 // ComparisonFailure
         actualDesign.userId shouldBe 9
         actualDesign.name shouldBe "Cat"
-        actualDesign.dateCreated shouldBe Instant.ofEpochSecond(1518278198)
 
         /*
         org.junit.ComparisonFailure: expected:<[2]> but was:<[1]>
@@ -58,15 +55,14 @@ class DataClassAssertions {
         val expectedDesign = Design(
             id = 2,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         )
         assertThat(actualDesign).isEqualTo(expectedDesign)
 
         /*
         org.junit.ComparisonFailure: expected:<Design(id=[2], userId=9, name=Cat...> but was:<Design(id=[1], userId=9, name=Cat...>
-        Expected :Design(id=2, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
-        Actual   :Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
+        Expected :Design(id=2, userId=9, name=Cat)
+        Actual   :Design(id=1, userId=9, name=Cat)
          */
     }
 
@@ -79,15 +75,14 @@ class DataClassAssertions {
         val expectedDesign = Design(
             id = 2,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         )
         actualDesign shouldBe expectedDesign
 
         /*
-        org.opentest4j.AssertionFailedError: expected:<Design(id=2, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)> but was:<Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)>
-        Expected :Design(id=2, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
-        Actual   :Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
+        org.opentest4j.AssertionFailedError: expected:<Design(id=2, userId=9, name=Cat)> but was:<Design(id=1, userId=9, name=Cat)>
+        Expected :Design(id=2, userId=9, name=Cat)
+        Actual   :Design(id=1, userId=9, name=Cat)
          */
     }
 
@@ -102,28 +97,26 @@ class DataClassAssertions {
             Design(
                 id = 1,
                 userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
+                name = "Cat"
             ),
             Design(
                 id = 2,
                 userId = 4,
-                name = "Dog",
-                dateCreated = Instant.ofEpochSecond(1518279000)
+                name = "Dog"
             )
         )
         /*
         java.lang.AssertionError:
         Expecting:
-          <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-            Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
+          <[Design(id=1, userId=9, name=Cat),
+            Design(id=2, userId=4, name=Dogggg)]>
         to contain exactly (and in same order):
-          <[Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-            Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+          <[Design(id=1, userId=9, name=Cat),
+            Design(id=2, userId=4, name=Dog)]>
         but some elements were not found:
-          <[Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)]>
+          <[Design(id=2, userId=4, name=Dog)]>
         and others were not expected:
-          <[Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)]>
+          <[Design(id=2, userId=4, name=Dogggg)]>
          */
     }
 
@@ -137,28 +130,26 @@ class DataClassAssertions {
             Design(
                 id = 1,
                 userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
+                name = "Cat"
             ),
             Design(
                 id = 2,
                 userId = 4,
-                name = "Dog",
-                dateCreated = Instant.ofEpochSecond(1518279000)
+                name = "Dog"
             )
         )
         /*
         java.lang.AssertionError: Expecting: [
-          Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=1, userId=9, name=Cat),
+          Design(id=2, userId=4, name=Dog)
         ] but was: [
-          Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z),
-          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=1, userId=9, name=Cat),
+          Design(id=2, userId=4, name=Dogggg)
         ]
         Some elements were missing: [
-          Design(id=2, userId=4, name=Dog, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=2, userId=4, name=Dog)
         ] and some elements were unexpected: [
-          Design(id=2, userId=4, name=Dogggg, dateCreated=2018-02-10T16:10:00Z)
+          Design(id=2, userId=4, name=Dogggg)
         ]
          */
     }
@@ -172,11 +163,10 @@ class DataClassAssertions {
         val expectedDesign = Design(
             id = 2,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         )
-        assertThat(actualDesign).isEqualToIgnoringGivenFields(expectedDesign, "dateCreated")
-        assertThat(actualDesign).isEqualToComparingOnlyGivenFields(expectedDesign, "id", "name")
+        assertThat(actualDesign).isEqualToIgnoringGivenFields(expectedDesign, "id")
+        assertThat(actualDesign).isEqualToComparingOnlyGivenFields(expectedDesign, "userId", "name")
     }
 
     @Test
@@ -188,11 +178,10 @@ class DataClassAssertions {
         val expectedDesign = Design(
             id = 2,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         )
         actualDesign.shouldBeEqualToIgnoringFields(expectedDesign, Design::id)
-        actualDesign.shouldBeEqualToUsingFields(expectedDesign, Design::dateCreated, Design::name)
+        actualDesign.shouldBeEqualToUsingFields(expectedDesign, Design::userId, Design::name)
     }
 
     @Test
@@ -205,28 +194,24 @@ class DataClassAssertions {
             Design(
                 id = 1,
                 userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
+                name = "Cat"
             ),
             Design(
                 id = 2,
                 userId = 4,
-                name = "Dog",
-                dateCreated = Instant.ofEpochSecond(1518279000)
+                name = "Dog"
             )
         )
-        assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
+        assertThat(actualDesigns).usingElementComparatorOnFields("userId", "name").containsExactly(
             Design(
                 id = 1,
                 userId = 9,
-                name = "Cat",
-                dateCreated = Instant.ofEpochSecond(1518278198)
+                name = "Cat"
             ),
             Design(
                 id = 2,
                 userId = 4,
-                name = "Dog",
-                dateCreated = Instant.ofEpochSecond(1518279000)
+                name = "Dog"
             )
         )
     }
@@ -258,7 +243,6 @@ class DataClassAssertions {
             it.id shouldBe 2
             it.userId shouldBe 9
             it.name shouldBe "Cat"
-            it.dateCreated shouldBe Instant.ofEpochSecond(1518278198)
         }
         /**
          * org.opentest4j.AssertionFailedError: Design(id=1, userId=9, name=Cat, dateCreated=2018-02-10T15:56:38Z)
@@ -272,8 +256,7 @@ class DataClassAssertions {
 data class Design(
     val id: Int,
     val userId: Int,
-    val name: String,
-    val dateCreated: Instant
+    val name: String
 )
 
 class DesignClient {
@@ -281,22 +264,19 @@ class DesignClient {
         Design(
             id = 1,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         )
 
     fun getAllDesigns() = listOf(
         Design(
             id = 1,
             userId = 9,
-            name = "Cat",
-            dateCreated = Instant.ofEpochSecond(1518278198)
+            name = "Cat"
         ),
         Design(
             id = 2,
             userId = 4,
-            name = "Dogggg",
-            dateCreated = Instant.ofEpochSecond(1518279000)
+            name = "Dogggg"
         )
     )
 }
