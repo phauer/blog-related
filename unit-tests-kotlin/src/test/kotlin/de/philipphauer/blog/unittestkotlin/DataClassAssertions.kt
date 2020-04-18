@@ -99,8 +99,18 @@ class DataClassAssertions {
         val actualDesigns = client.getAllDesigns()
 
         assertThat(actualDesigns).containsExactly(
-            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dog",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
         )
         /*
         java.lang.AssertionError:
@@ -124,8 +134,18 @@ class DataClassAssertions {
         val actualDesigns = client.getAllDesigns()
 
         actualDesigns.shouldContainExactly(
-            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dog",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
         )
         /*
         java.lang.AssertionError: Expecting: [
@@ -182,12 +202,32 @@ class DataClassAssertions {
         val actualDesigns = client.getAllDesigns()
 
         assertThat(actualDesigns).usingElementComparatorIgnoringFields("dateCreated").containsExactly(
-            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dog",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
         )
         assertThat(actualDesigns).usingElementComparatorOnFields("id", "name").containsExactly(
-            Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-            Design(id = 2, userId = 4, name = "Dog", dateCreated = Instant.ofEpochSecond(1518279000))
+            Design(
+                id = 1,
+                userId = 9,
+                name = "Cat",
+                dateCreated = Instant.ofEpochSecond(1518278198)
+            ),
+            Design(
+                id = 2,
+                userId = 4,
+                name = "Dog",
+                dateCreated = Instant.ofEpochSecond(1518279000)
+            )
         )
     }
 
@@ -238,10 +278,25 @@ data class Design(
 
 class DesignClient {
     fun requestDesign(id: Int) =
-        Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198))
+        Design(
+            id = 1,
+            userId = 9,
+            name = "Cat",
+            dateCreated = Instant.ofEpochSecond(1518278198)
+        )
 
     fun getAllDesigns() = listOf(
-        Design(id = 1, userId = 9, name = "Cat", dateCreated = Instant.ofEpochSecond(1518278198)),
-        Design(id = 2, userId = 4, name = "Dogggg", dateCreated = Instant.ofEpochSecond(1518279000))
+        Design(
+            id = 1,
+            userId = 9,
+            name = "Cat",
+            dateCreated = Instant.ofEpochSecond(1518278198)
+        ),
+        Design(
+            id = 2,
+            userId = 4,
+            name = "Dogggg",
+            dateCreated = Instant.ofEpochSecond(1518279000)
+        )
     )
 }
