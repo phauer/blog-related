@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import io.mockk.clearAllMocks
 import io.mockk.mockk

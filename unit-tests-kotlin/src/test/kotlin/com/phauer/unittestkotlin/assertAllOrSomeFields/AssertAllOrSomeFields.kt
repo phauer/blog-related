@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin.assertAllOrSomeFields
+package com.phauer.unittestkotlin.assertAllOrSomeFields
 
 import io.kotest.assertions.asClue
 import io.kotest.matchers.shouldBe

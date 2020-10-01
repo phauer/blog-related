@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import com.vaadin.navigator.View
 import com.vaadin.ui.Button

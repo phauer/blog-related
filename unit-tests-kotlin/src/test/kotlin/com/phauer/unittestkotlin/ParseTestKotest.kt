@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test

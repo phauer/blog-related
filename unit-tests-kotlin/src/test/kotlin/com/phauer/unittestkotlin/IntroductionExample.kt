@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 //import com.nhaarman.mockito_kotlin.mock
 //import com.nhaarman.mockito_kotlin.reset

@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance

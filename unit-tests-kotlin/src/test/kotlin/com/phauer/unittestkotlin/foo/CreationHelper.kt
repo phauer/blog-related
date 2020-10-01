@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin.foo
+package com.phauer.unittestkotlin.foo
 
 import java.time.Instant
 import java.util.Locale

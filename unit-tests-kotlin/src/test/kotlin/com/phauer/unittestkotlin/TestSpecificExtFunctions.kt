@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.shouldBe

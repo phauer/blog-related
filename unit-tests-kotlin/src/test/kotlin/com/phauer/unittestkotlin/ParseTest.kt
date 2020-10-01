@@ -1,4 +1,4 @@
-package de.philipphauer.blog.unittestkotlin
+package com.phauer.unittestkotlin
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

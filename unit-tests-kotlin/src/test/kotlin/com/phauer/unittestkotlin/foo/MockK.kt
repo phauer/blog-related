@@ -1,8 +1,8 @@
-package de.philipphauer.blog.unittestkotlin.foo
+package com.phauer.unittestkotlin.foo
 
-import de.philipphauer.blog.unittestkotlin.DesignController
-import de.philipphauer.blog.unittestkotlin.DesignDAO
-import de.philipphauer.blog.unittestkotlin.DesignMapper
+import com.phauer.unittestkotlin.DesignController
+import com.phauer.unittestkotlin.DesignDAO
+import com.phauer.unittestkotlin.DesignMapper
 import io.mockk.clearMocks
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
