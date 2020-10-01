@@ -39,7 +39,7 @@ class DataClassAssertions {
         actualDesign.name shouldBe "Cat"
 
         /*
-        org.junit.ComparisonFailure: expected:<[2]> but was:<[1]>
+        org.opentest4j.AssertionFailedError: expected:<2> but was:<1>
         Expected :2
         Actual   :1
          */
@@ -80,7 +80,10 @@ class DataClassAssertions {
         actualDesign shouldBe expectedDesign
 
         /*
-        org.opentest4j.AssertionFailedError: expected:<Design(id=2, userId=9, name=Cat)> but was:<Design(id=1, userId=9, name=Cat)>
+        org.opentest4j.AssertionFailedError: data class diff for de.philipphauer.blog.unittestkotlin.Design
+        └ id: expected:<2> but was:<1>
+
+        expected:<Design(id=2, userId=9, name=Cat)> but was:<Design(id=1, userId=9, name=Cat)>
         Expected :Design(id=2, userId=9, name=Cat)
         Actual   :Design(id=1, userId=9, name=Cat)
          */
